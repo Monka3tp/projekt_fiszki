@@ -4,6 +4,7 @@ import CategoryCard from "./components/CategoryCard";
 import { categories } from "./data/categories";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./components/Login";
+import SubjectPage from "./components/SubjectPage.jsx";
 
 function Home() {
     return (
@@ -25,6 +26,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/subject/:subjectId" element={<SubjectPage />} /> {/* 🔥 nowa trasa */}
             </Routes>
         </BrowserRouter>
     );
