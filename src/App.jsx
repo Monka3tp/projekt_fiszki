@@ -2,20 +2,31 @@ import "./App.css";
 import Header from "./components/Header";
 import CategoryCard from "./components/CategoryCard";
 import { categories } from "./data/categories";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import LoginPage from "./components/Login";
+
+function Home() {
+    return (
+        <main className="main">
+            <h1 className="title">Fiszki</h1>
+            <div className="grid">
+                {categories.map((cat) => (
+                    <CategoryCard key={cat.id} {...cat} />
+                ))}
+            </div>
+        </main>
+    );
+}
 
 function App() {
     return (
-        <div>
+        <BrowserRouter>
             <Header />
-            <main className="main">
-                <h1 className="title">Fiszki</h1>
-                <div className="grid">
-                    {categories.map((cat) => (
-                        <CategoryCard key={cat.id} {...cat} />
-                    ))}
-                </div>
-            </main>
-        </div>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<LoginPage />} />
+            </Routes>
+        </BrowserRouter>
     );
 }
 
