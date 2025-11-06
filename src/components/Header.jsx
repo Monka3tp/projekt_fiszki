@@ -1,4 +1,5 @@
 import "./Header.css";
+import { Link } from "react-router-dom";
 
 function Header() {
     return (
@@ -7,7 +8,7 @@ function Header() {
             <nav className="nav">
                 <a href="#">Utwórz fiszkę</a>
                 <a href="#">Twoje fiszki</a>
-                <a href="#">Zaloguj się</a>
+                <Link to="/login">Zaloguj się</Link>
                 <button className="download-btn">Pobierz aplikację</button>
             </nav>
         </header>

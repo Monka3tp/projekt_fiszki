@@ -24,7 +24,7 @@
 }
 
 .download-btn {
-    background-color: #d946ef;
+    background: linear-gradient(90deg, #d633ff, #9b4dff);
     color: white;
     border: none;
     border-radius: 8px;
