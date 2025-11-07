@@ -1,12 +1,9 @@
 import React from "react";
 import "./Login.css";
-import Header from "./Header.jsx";
 
 const LoginPage = () => {
     return (
         <div className="login-page">
-
-
             <main className="login-container">
                 <h1>Zaloguj się</h1>
                 <p className="login-subtitle">Witaj ponownie w BrainDeck</p>
