@@ -1,4 +1,3 @@
-// src/components/CategoryCard.jsx
 import "./CategoryCard.css";
 import { useNavigate } from "react-router-dom";
 import { makeSlug } from "../services/tools.jsx";
@@ -8,7 +7,7 @@ function CategoryCard({ category }) {
 
     const handleClick = () => {
         const derivedCategory = makeSlug(category.title);
-        navigate(`/category/${derivedCategory}`);
+        navigate(`/${derivedCategory}/sets`);
     };
 
     return (

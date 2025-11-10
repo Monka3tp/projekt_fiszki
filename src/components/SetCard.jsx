@@ -7,7 +7,7 @@ function SetCard({ set }) {
     const { categoryId } = useParams()
     const handleClick = () => {
         const setId = makeSlug(set.title);
-        navigate(`/category/${categoryId}/${setId}`);
+        navigate(`/${categoryId}/${setId}`);
     };
 
     return (
