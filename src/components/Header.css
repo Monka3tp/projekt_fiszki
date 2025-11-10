@@ -1,11 +1,3 @@
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 3rem;
-    border-bottom: 1px solid #eee;
-}
-
 .logo {
     font-weight: bold;
     font-size: 1.2rem;
@@ -17,18 +9,70 @@
     gap: 1.5rem;
 }
 
-.nav a {
+.nav a, .nav Link {
     text-decoration: none;
     color: #000;
     font-weight: 500;
 }
 
-.download-btn {
+.profile-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 8px;
+}
+
+.profile-name {
+    margin-left: 6px;
+    font-weight: 600;
+    color: #111;
+    max-width: 160px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.profile-initials {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
     background: linear-gradient(90deg, #d633ff, #9b4dff);
     color: white;
-    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.profile-dropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    background: white;
     border-radius: 8px;
-    padding: 0.5rem 1rem;
+    box-shadow: 0 8px 24px rgba(16,24,40,0.12);
+    min-width: 180px;
+    overflow: hidden;
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-item {
+    padding: 10px 14px;
+    text-align: left;
+    background: transparent;
+    border: none;
+    text-decoration: none;
+    color: #111;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 500;
+}
+
+.dropdown-item:hover {
+    background: #faf5ff;
 }
