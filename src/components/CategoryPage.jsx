@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import SetCard from "./SetCard.jsx";
+import "../App.css";
 import { setData } from "../data/setData.jsx";
 
 function CategoryPage() {
@@ -10,7 +11,7 @@ function CategoryPage() {
         return (
             <main className="main">
                 <h1 className="title">Przedmiot nie znaleziony</h1>
-                <p>Nie znaleziono wybranego przedmiotu. <Link to="/">Wróć do listy przedmiotów</Link>.</p>
+                <p>Nie znaleziono wybranego przedmiotu. <Link to="/" className="link">Wróć do listy przedmiotów</Link>.</p>
             </main>
         );
     }

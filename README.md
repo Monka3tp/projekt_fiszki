@@ -7,6 +7,10 @@ Install by:
 ```
 npm install -g ngrok
 ```
+or
+```
+npm install
+```
 
 Ensure that authentication is set up for your ngrok account by running:
 
