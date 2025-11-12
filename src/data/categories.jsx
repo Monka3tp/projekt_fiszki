@@ -30,12 +30,12 @@ export const categories = [
     id: 5,
     title: "Egzamin INF.03",
     setCount: 100,
-    image: encodeURI(`${imagesPath}/inf-03-obraz.png`), // lepiej: rename to inf-03-obraz.png i użyć tam nazwy bez spacji
+    image: encodeURI(`${imagesPath}/inf03-obraz.png`),
   },
   {
     id: 6,
     title: "Egzamin INF.04",
     setCount: 100,
-    image: encodeURI(`${imagesPath}/inf-03-obraz.png`),
+    image: encodeURI(`${imagesPath}/inf03-obraz.png`),
   },
 ];
