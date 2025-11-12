@@ -8,6 +8,7 @@ import CategoryPage from "./components/CategoryPage.jsx";
 import DeckPage from "./components/DeckPage.jsx";
 import LoginRegisterPage from "./components/LoginRegisterPage.jsx";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
+import TempCreateDeck from "./components/TempCreateDeck.jsx";
 
 function Home() {
     return (
@@ -33,6 +34,7 @@ function App() {
                     <Route path="/register" element={<LoginRegisterPage />} />
                     <Route path="/:categoryId/decks" element={<CategoryPage />} />
                     <Route path="/:categoryId/:deckId" element={<DeckPage />} />
+                    <Route path="/temp_create" element={<TempCreateDeck />} />
                 </Routes>
             </BrowserRouter>
         </AuthProvider>
