@@ -1,4 +1,4 @@
-export const setData = {
+export const deckData = {
     angielski: {
         title: "Język angielski",
         chapters: [
@@ -67,3 +67,4 @@ export const setData = {
 
     // możesz dodać kolejne przedmioty analogicznie
 };
+
