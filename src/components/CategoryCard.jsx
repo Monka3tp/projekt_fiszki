@@ -1,25 +1,21 @@
 import "./CategoryCard.css";
 import { useNavigate } from "react-router-dom";
+import { makeSlug } from "../services/tools.jsx";
 
-function CategoryCard({ id, title, setsCount, image }) {
+function CategoryCard({ category }) {
     const navigate = useNavigate();
 
     const handleClick = () => {
-        // Tworzymy prosty identyfikator w URL, np. "Język angielski" → "angielski"
-        const subjectId = title
-            .toLowerCase()
-            .replace("język ", "") // usuwamy "język " z nazw
-            .replace(/\s+/g, "-"); // spacje na myślniki
-
-        navigate(`/subject/${subjectId}`);
+        const derivedCategory = makeSlug(category.title);
+        navigate(`/${derivedCategory}/sets`);
     };
 
     return (
         <div className="card" onClick={handleClick}>
-            <img src={image} alt={title} />
+            <img src={category.image} alt={category.title} />
             <div className="card-info">
-                <h3>{title}</h3>
-                <p>Ilość zestawów: {setsCount}</p>
+                <h3>{category.title}</h3>
+                <p>Ilość zestawów: {category.setCount}</p>
             </div>
         </div>
     );

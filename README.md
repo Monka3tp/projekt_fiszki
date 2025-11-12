@@ -1,16 +1,29 @@
-# React + Vite
+# Setting up and Running the Server with Ngrok Gateway
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+## 1. Running the server for Ngrok gateway
+Install by:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```
+npm install -g ngrok
+```
+or
+```
+npm install
+```
 
-## React Compiler
+Ensure that authentication is set up for your ngrok account by running:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```
+ngrok authtoken YOUR_AUTH_TOKEN
+```
+To run the server for the Ngrok gateway, use the following command:
 
-## Expanding the ESLint configuration
+```
+ngrok http 5000
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 2. Use provided run configurations
+We've assembled run configurations for WebStorm to streamline the process of starting the server with Ngrok gateway. You can find these configurations in the `.run` directory of the project.\
+These configurations are pre-set to help you quickly launch the server without manually entering commands each time and should be selected **as default**. If not check the instructions below.
+### Click [here](./.run/README.md) for detailed instructions on how to use these configurations in your IDE.
