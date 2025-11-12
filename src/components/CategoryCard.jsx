@@ -7,7 +7,7 @@ function CategoryCard({ category }) {
 
     const handleClick = () => {
         const derivedCategory = makeSlug(category.title);
-        navigate(`/${derivedCategory}/sets`);
+        navigate(`/${derivedCategory}/decks`);
     };
 
     return (
@@ -15,7 +15,7 @@ function CategoryCard({ category }) {
             <img src={category.image} alt={category.title} />
             <div className="card-info">
                 <h3>{category.title}</h3>
-                <p>Ilość zestawów: {category.setCount}</p>
+                <p>Ilość zestawów: {category.deckCount}</p>
             </div>
         </div>
     );
