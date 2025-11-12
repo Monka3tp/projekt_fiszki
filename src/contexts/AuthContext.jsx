@@ -27,7 +27,7 @@ export function AuthProvider({ children }) {
     );
 }
 
-// poprawna nazwa hooka zgodna z regułami React Hooks
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
     return useContext(AuthContext);
 }
