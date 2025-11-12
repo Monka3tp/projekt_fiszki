@@ -1,11 +1,11 @@
 import { useParams, Link } from "react-router-dom";
-import DeckCard from "./DeckCard.jsx";
+import SetCard from "./SetCard.jsx";
 import "../App.css";
-import { deckData } from "../data/deckData.jsx";
+import { setData } from "../data/setData.jsx";
 
 function CategoryPage() {
     const { categoryId } = useParams();
-    const category = deckData[categoryId];
+    const category = setData[categoryId];
 
     if (!category) {
         return (
@@ -21,11 +21,11 @@ function CategoryPage() {
             <h1 className="title">{category.title}</h1>
             <div className="grid">
                 {category.chapters && category.chapters.length > 0 ? (
-                    category.chapters.map((deck, i) => (
-                        <DeckCard
+                    category.chapters.map((set, i) => (
+                        <SetCard
                             key={i}
                             category={category}
-                            deck={deck}
+                            set={set}
                         />
                     ))
                 ) : (
