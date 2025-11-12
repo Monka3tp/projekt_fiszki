@@ -31,7 +31,7 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<LoginRegisterPage />} />
                     <Route path="/register" element={<LoginRegisterPage />} />
-                    <Route path="/:categoryId/sets" element={<CategoryPage />} />
+                    <Route path="/:categoryId/decks" element={<CategoryPage />} />
                     <Route path="/:categoryId/:deckId" element={<DeckPage />} />
                 </Routes>
             </BrowserRouter>
