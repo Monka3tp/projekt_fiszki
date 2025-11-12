@@ -5,7 +5,7 @@ import CategoryCard from "./components/CategoryCard";
 import { categories } from "./data/categories.jsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import CategoryPage from "./components/CategoryPage.jsx";
-import SetPage from "./components/SetPage.jsx";
+import DeckPage from "./components/DeckPage.jsx";
 import LoginRegisterPage from "./components/LoginRegisterPage.jsx";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
 
@@ -31,8 +31,8 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<LoginRegisterPage />} />
                     <Route path="/register" element={<LoginRegisterPage />} />
-                    <Route path="/:categoryId/sets" element={<CategoryPage />} />
-                    <Route path="/:categoryId/:setId" element={<SetPage />} />
+                    <Route path="/:categoryId/decks" element={<CategoryPage />} />
+                    <Route path="/:categoryId/:deckId" element={<DeckPage />} />
                 </Routes>
             </BrowserRouter>
         </AuthProvider>
