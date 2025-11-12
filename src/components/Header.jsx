@@ -29,7 +29,7 @@ function Header() {
         <header className="header" style={{ position: "relative" }}>
             <div className="logo">BrainDeck</div>
             <nav className="nav">
-                <Link to={"/create-flashcards-set"}>Utwórz zestaw fiszek</Link>
+                <Link to={"/create-flashcards-deck"}>Utwórz deck fiszek</Link>
 
                 {user ? (
                     <Dropdown align="end" show={open} onToggle={(nextShow) => setOpen(nextShow)}>
@@ -40,7 +40,7 @@ function Header() {
 
                         <Fade in={open}>
                             <Dropdown.Menu className="profile-dropdown" show={open}>
-                                <Dropdown.Item as={Link} to="/your-sets" onClick={() => setOpen(false)}>Twoje fiszki</Dropdown.Item>
+                                <Dropdown.Item as={Link} to="/your-decks" onClick={() => setOpen(false)}>Twoje fiszki</Dropdown.Item>
                                 <Dropdown.Item onClick={handleLogout}>Wyloguj się</Dropdown.Item>
                             </Dropdown.Menu>
                         </Fade>
