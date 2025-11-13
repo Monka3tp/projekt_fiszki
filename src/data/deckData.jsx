@@ -16,9 +16,9 @@ export const deckData = {
             },
             {
                 id: 3,
-                title: "Czasy teraźniejsze",
+                title: "Podróże",
                 flashcardCount: 100,
-                image: "src/assets/images/angielski-czasy.jpg",
+                image: "src/assets/images/angielski-podroze.jpg",
             },
             {
                 id: 4,
@@ -28,13 +28,13 @@ export const deckData = {
             },
             {
                 id: 5,
-                title: "Przedimki",
+                title: "Jedzenie",
                 flashcardCount: 100,
-                image: "src/assets/images/angielski-przedimki.jpg",
+                image: "src/assets/images/angielski-jedzenie.jpg",
             },
             {
                 id: 6,
-                title: "Czas przeszły",
+                title: "Szkoła",
                 flashcardCount: 100,
                 image: "src/assets/images/angielski-czas-przeszly.jpg",
             },
@@ -52,15 +52,37 @@ export const deckData = {
             },
             {
                 id: 8,
-                title: "Gramatyka",
+                title: "Lalka",
                 flashcardCount: 100,
-                image: "src/assets/images/gramatyka.jpg"
+                image: "src/assets/images/lalka.jpg"
             },
             {
                 id: 9,
-                title: "Literatura",
+                title: "Przypadki",
                 flashcardCount: 100,
-                image: "src/assets/images/literatura.jpg"
+                image: "src/assets/images/przypadki.jpg"
+            },
+        ],
+    },
+    historia: {
+        title: "Historia",
+        chapters: [
+            {
+                id: 10,
+                title: "Daty",
+                flashcardCount: 100,
+                image: "src/assets/images/daty.jpg"
+            },
+        ],
+    },
+    biologia: {
+        title: "Biologia",
+        chapters: [
+            {
+                id: 11,
+                title: "Człowiek",
+                flashcardCount: 100,
+                image: "src/assets/images/czlowiek-biologia.jpg"
             },
         ],
     },
