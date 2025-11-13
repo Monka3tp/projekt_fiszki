@@ -2,23 +2,24 @@ import "./CategoryCard.css";
 import {useNavigate, useParams} from "react-router-dom";
 import { makeSlug } from "../services/tools.jsx";
 
-function SetCard({ set }) {
+function DeckCard({ deck }) {
     const navigate = useNavigate();
     const { categoryId } = useParams()
     const handleClick = () => {
-        const setId = makeSlug(set.title);
-        navigate(`/${categoryId}/${setId}`);
+        const deckId = makeSlug(deck.title);
+        navigate(`/${categoryId}/${deckId}`);
     };
 
     return (
         <div className="card" onClick={handleClick}>
-            <img src={set.image} alt={set.title} />
+            <img src={deck.image} alt={deck.title} />
             <div className="card-info">
-                <h3>{set.title}</h3>
-                <p>Ilość zestawów: {set.flashcardCount}</p>
+                <h3>{deck.title}</h3>
+                <p>Ilość zestawów: {deck.flashcardCount}</p>
             </div>
         </div>
     );
 }
 
-export default SetCard;
+export default DeckCard;
+

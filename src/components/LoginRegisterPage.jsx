@@ -1,5 +1,4 @@
-// javascript
-// File: `src/components/LoginRegisterPage.jsx`
+
 import React, { useState, useEffect } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import "../App.css";

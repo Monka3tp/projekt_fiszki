@@ -1,16 +1,17 @@
 import { useParams, Link } from "react-router-dom";
-import SetCard from "./SetCard.jsx";
-import { setData } from "../data/setData.jsx";
+import DeckCard from "./DeckCard.jsx";
+import "../App.css";
+import { deckData } from "../data/deckData.jsx";
 
 function CategoryPage() {
     const { categoryId } = useParams();
-    const category = setData[categoryId];
+    const category = deckData[categoryId];
 
     if (!category) {
         return (
             <main className="main">
                 <h1 className="title">Przedmiot nie znaleziony</h1>
-                <p>Nie znaleziono wybranego przedmiotu. <Link to="/">Wróć do listy przedmiotów</Link>.</p>
+                <p>Nie znaleziono wybranego przedmiotu. <Link to="/" className="link">Wróć do listy przedmiotów</Link>.</p>
             </main>
         );
     }
@@ -20,11 +21,11 @@ function CategoryPage() {
             <h1 className="title">{category.title}</h1>
             <div className="grid">
                 {category.chapters && category.chapters.length > 0 ? (
-                    category.chapters.map((set, i) => (
-                        <SetCard
+                    category.chapters.map((deck, i) => (
+                        <DeckCard
                             key={i}
                             category={category}
-                            set={set}
+                            deck={deck}
                         />
                     ))
                 ) : (
