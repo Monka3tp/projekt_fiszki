@@ -9,6 +9,8 @@ import DeckPage from "./components/DeckPage.jsx";
 import LoginRegisterPage from "./components/LoginRegisterPage.jsx";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
 import CreateDeck from "./components/CreateDeck.jsx";
+import Footer from "./components/Footer.jsx";
+import AboutUs from "./components/AboutUs.jsx";
 
 function Home() {
     return (
@@ -36,8 +38,11 @@ function App() {
                     <Route path="/:categoryId/:deckId" element={<DeckPage />} />
                     <Route path="/create-flashcard-deck" element={<CreateDeck />} />
                 </Routes>
+                <AboutUs />
             </BrowserRouter>
+            <Footer />
         </AuthProvider>
+
     );
 }
 export default App;
