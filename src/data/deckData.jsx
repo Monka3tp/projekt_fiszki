@@ -1,3 +1,6 @@
+const imagesPath = `${process.env.PUBLIC_URL || ''}/images`;
+
+
 export const deckData = {
     angielski: {
         title: "Język angielski",
@@ -6,37 +9,37 @@ export const deckData = {
                 id: 1,
                 title: "Człowiek",
                 flashcardCount: 100,
-                image: "src/assets/images/angielski-czlowiek.jpg",
+                image: {imagesPath} + "/angielski-czlowiek.jpg",
             },
             {
                 id: 2,
                 title: "Miejsce zamieszkania",
                 flashcardCount: 100,
-                image: "src/assets/images/angielski-dom.jpg",
+                image: {imagesPath} + "/angielski-dom.jpg",
             },
             {
                 id: 3,
                 title: "Czasy teraźniejsze",
                 flashcardCount: 100,
-                image: "src/assets/images/angielski-czasy.jpg",
+                image: {imagesPath} + "/angielski-czasy.jpg",
             },
             {
                 id: 4,
                 title: "Zwierzęta",
                 flashcardCount: 100,
-                image: "src/assets/images/angielski-zwierzeta.jpg",
+                image: {imagesPath} + "/angielski-zwierzeta.jpg",
             },
             {
                 id: 5,
                 title: "Przedimki",
                 flashcardCount: 100,
-                image: "src/assets/images/angielski-przedimki.jpg",
+                image: {imagesPath} + "/angielski-przedimki.jpg",
             },
             {
                 id: 6,
                 title: "Czas przeszły",
                 flashcardCount: 100,
-                image: "src/assets/images/angielski-czas-przeszly.jpg",
+                image: {imagesPath} + "/angielski-czas-przeszly.jpg",
             },
         ],
     },
@@ -48,19 +51,19 @@ export const deckData = {
                 id: 7,
                 title: "Ortografia",
                 flashcardCount: 100,
-                image: "src/assets/images/ortografia.jpg"
+                image: {imagesPath} + "/ortografia.jpg"
             },
             {
                 id: 8,
                 title: "Gramatyka",
                 flashcardCount: 100,
-                image: "src/assets/images/gramatyka.jpg"
+                image: {imagesPath} + "/gramatyka.jpg"
             },
             {
                 id: 9,
                 title: "Literatura",
                 flashcardCount: 100,
-                image: "src/assets/images/literatura.jpg"
+                image: {imagesPath} + "/literatura.jpg"
             },
         ],
     },
