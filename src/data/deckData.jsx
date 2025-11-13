@@ -87,6 +87,29 @@ export const deckData = {
         ],
     },
 
-    // możesz dodać kolejne przedmioty analogicznie
+    inf03: {
+        title: "INF.03",
+        chapters: [
+            {
+                id: 12,
+                title: "Test teoretyczny INF.03",
+                flashcardCount: 100,
+                image: "src/assets/images/teoretyczny03.jpg"
+            },
+        ],
+    },
+    inf04: {
+        title: "INF.04",
+        chapters: [
+            {
+                id: 13,
+                title: "Test teoretyczny INF.04",
+                flashcardCount: 100,
+                image: "src/assets/images/teoretyczny04.jpg"
+            },
+        ],
+    },
+
+
 };
 
