@@ -1,5 +1,5 @@
 
-.card {
+.cat-card {
     border-radius: 12px;
     overflow: hidden;
     background-color: #fff;
@@ -8,29 +8,29 @@
     cursor: pointer;
 }
 
-.card:hover {
+.cat-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
-.card img {
+.cat-card img {
     width: 100%;
     height: 180px;
     object-fit: cover;
 }
 
-.card-info {
+.cat-card-info {
     padding: 1rem;
     text-align: left;
 }
 
-.card-info h3 {
+.cat-card-info h3 {
     margin: 0;
     font-size: 1.1rem;
     font-weight: 600;
 }
 
-.card-info p {
+.cat-card-info p {
     color: #666;
     margin-top: 0.3rem;
     font-size: 0.9rem;
