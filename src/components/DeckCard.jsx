@@ -11,9 +11,9 @@ function DeckCard({ deck }) {
     };
 
     return (
-        <div className="card" onClick={handleClick}>
+        <div className="cat-card" onClick={handleClick}>
             <img src={deck.image} alt={deck.title} />
-            <div className="card-info">
+            <div className="cat-card-info">
                 <h3>{deck.title}</h3>
                 <p>Ilość zestawów: {deck.flashcardCount}</p>
             </div>
