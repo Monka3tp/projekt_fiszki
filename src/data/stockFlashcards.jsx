@@ -645,5 +645,194 @@ const stockFlashcards = {
         isPublic: true,
         ownerId: "0"
     },
+    inf03: {
+        flashcards: [
+            {
+                front: "Podstawowym językiem do tworzenia struktury strony internetowej jest ____",
+                back: "HTML"
+            },
+            {
+                front: "Język służący do opisu wyglądu i stylu strony WWW to ____",
+                back: "CSS"
+            },
+            {
+                front: "Aby strona była interaktywna po stronie klienta, używa się języka ____",
+                back: "JavaScript"
+            },
+            {
+                front: "Podstawowym językiem zapytań do baz danych jest ____",
+                back: "SQL"
+            },
+            {
+                front: "Do łączenia bazy danych z aplikacją internetową najczęściej wykorzystuje się język ____",
+                back: "PHP"
+            },
+            {
+                front: "Polecenie SQL do pobierania danych z tabeli to ____",
+                back: "SELECT"
+            },
+            {
+                front: "Atrybut HTML określający alternatywny tekst obrazu to ____",
+                back: "alt"
+            },
+            {
+                front: "Znacznik służący do osadzenia skryptu JavaScript w HTML to ____",
+                back: "script"
+            },
+            {
+                front: "W SQL polecenie do usuwania rekordów z tabeli to ____",
+                back: "DELETE"
+            },
+            {
+                front: "W CSS selektor klasy oznaczamy znakiem ____",
+                back: ". (kropka)"
+            },
+            {
+                front: "Aby połączyć się z bazą danych MySQL w PHP, używa się funkcji ____",
+                back: "mysqli_connect()"
+            },
+            {
+                front: "Framework CSS, który ułatwia tworzenie responsywnych stron, to ____",
+                back: "Bootstrap"
+            },
+            {
+                front: "Polecenie GIT do zapisania zmian w repozytorium lokalnym to ____",
+                back: "git commit"
+            },
+            {
+                front: "Do określenia klucza głównego w tabeli SQL używa się słowa kluczowego ____",
+                back: "PRIMARY KEY"
+            },
+            {
+                front: "Protokół używany do przesyłania stron internetowych w sposób bezpieczny to ____",
+                back: "HTTPS"
+            }
+        ],
+        isPublic: true,
+        ownerId: "0"
+    },
+    inf04: {
+        flashcards: [
+            {
+                front: "System operacyjny z rodziny open-source, często używany w serwerach, to ____",
+                back: "Linux"
+            },
+            {
+                front: "Podstawowym katalogiem w systemie Linux jest ____",
+                back: "/ (root)"
+            },
+            {
+                front: "W systemie Windows pliki wykonywalne mają rozszerzenie ____",
+                back: ".exe"
+            },
+            {
+                front: "Polecenie w systemie Linux do zmiany uprawnień pliku to ____",
+                back: "chmod"
+            },
+            {
+                front: "Polecenie w systemie Windows służące do wyświetlenia listy plików w katalogu to ____",
+                back: "dir"
+            },
+            {
+                front: "Adres IP wersji 4 składa się z ____ bajtów",
+                back: "4"
+            },
+            {
+                front: "Urządzenie łączące różne sieci i kierujące ruchem między nimi to ____",
+                back: "router"
+            },
+            {
+                front: "Protokół odpowiedzialny za tłumaczenie nazw domen na adresy IP to ____",
+                back: "DNS"
+            },
+            {
+                front: "Maska podsieci 255.255.255.0 odpowiada prefiksowi CIDR ____",
+                back: "/24"
+            },
+            {
+                front: "Podstawowy protokół przesyłania plików w sieci to ____",
+                back: "FTP"
+            },
+            {
+                front: "Usługa umożliwiająca zdalne logowanie do systemu Linux to ____",
+                back: "SSH"
+            },
+            {
+                front: "Polecenie Linux do wyświetlenia aktualnego adresu IP interfejsu to ____",
+                back: "ip addr show"
+            },
+            {
+                front: "W systemie Windows usługa zarządzająca adresami IP w sieci lokalnej to ____",
+                back: "DHCP"
+            },
+            {
+                front: "Protokół bezpiecznego przesyłania stron internetowych to ____",
+                back: "HTTPS"
+            },
+            {
+                front: "Polecenie Linux do zmiany właściciela pliku to ____",
+                back: "chown"
+            },
+            {
+                front: "Polecenie do sprawdzenia połączenia sieciowego z innym hostem to ____",
+                back: "ping"
+            },
+            {
+                front: "W systemie Windows do zarządzania procesami służy narzędzie ____",
+                back: "Menedżer zadań"
+            },
+            {
+                front: "Podstawowa jednostka przechowywania informacji w systemach komputerowych to ____",
+                back: "bit"
+            },
+            {
+                front: "Protokół używany do wysyłania poczty elektronicznej to ____",
+                back: "SMTP"
+            },
+            {
+                front: "Protokół używany do odbierania poczty elektronicznej to ____",
+                back: "POP3 lub IMAP"
+            },
+            {
+                front: "Aby dodać nowego użytkownika w systemie Linux, używa się polecenia ____",
+                back: "adduser"
+            },
+            {
+                front: "W systemie Linux do zatrzymania procesu używa się polecenia ____",
+                back: "kill"
+            },
+            {
+                front: "Adres IP zarezerwowany dla lokalnego hosta (loopback) to ____",
+                back: "127.0.0.1"
+            },
+            {
+                front: "Do zabezpieczenia sieci bezprzewodowej używa się protokołu ____",
+                back: "WPA2 lub WPA3"
+            },
+            {
+                front: "Rozszerzenie pliku kopii zapasowej w Windows Server to zwykle ____",
+                back: ".bak"
+            },
+            {
+                front: "Wirtualizacja umożliwia ____",
+                back: "uruchamianie wielu systemów operacyjnych na jednym komputerze"
+            },
+            {
+                front: "System plików stosowany w systemach Windows to ____",
+                back: "NTFS"
+            },
+            {
+                front: "Polecenie Linux do aktualizacji listy pakietów w systemach Debian to ____",
+                back: "apt update"
+            },
+            {
+                front: "Protokół używany do synchronizacji czasu w sieci to ____",
+                back: "NTP"
+            }
+        ],
+        isPublic: true,
+        ownerId: "0"
+    }
+
 
 }
