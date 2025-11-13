@@ -19,9 +19,9 @@ export const deckData = {
             },
             {
                 id: 3,
-                title: "Czasy teraźniejsze",
+                title: "Podróże",
                 flashcardCount: 100,
-                image: {imagesPath} + "/angielski-czasy.jpg",
+                image: "src/assets/images/angielski-podroze.jpg",
             },
             {
                 id: 4,
@@ -31,13 +31,13 @@ export const deckData = {
             },
             {
                 id: 5,
-                title: "Przedimki",
+                title: "Jedzenie",
                 flashcardCount: 100,
-                image: {imagesPath} + "/angielski-przedimki.jpg",
+                image: "src/assets/images/angielski-jedzenie.jpg",
             },
             {
                 id: 6,
-                title: "Czas przeszły",
+                title: "Szkoła",
                 flashcardCount: 100,
                 image: {imagesPath} + "/angielski-czas-przeszly.jpg",
             },
@@ -55,19 +55,64 @@ export const deckData = {
             },
             {
                 id: 8,
-                title: "Gramatyka",
+                title: "Lalka",
                 flashcardCount: 100,
-                image: {imagesPath} + "/gramatyka.jpg"
+                image: "src/assets/images/lalka.jpg"
             },
             {
                 id: 9,
-                title: "Literatura",
+                title: "Przypadki",
                 flashcardCount: 100,
-                image: {imagesPath} + "/literatura.jpg"
+                image: "src/assets/images/przypadki.jpg"
+            },
+        ],
+    },
+    historia: {
+        title: "Historia",
+        chapters: [
+            {
+                id: 10,
+                title: "Daty",
+                flashcardCount: 100,
+                image: "src/assets/images/daty.jpg"
+            },
+        ],
+    },
+    biologia: {
+        title: "Biologia",
+        chapters: [
+            {
+                id: 11,
+                title: "Człowiek",
+                flashcardCount: 100,
+                image: "src/assets/images/czlowiek-biologia.jpg"
             },
         ],
     },
 
-    // możesz dodać kolejne przedmioty analogicznie
+    inf03: {
+        title: "INF.03",
+        chapters: [
+            {
+                id: 12,
+                title: "Test teoretyczny INF.03",
+                flashcardCount: 100,
+                image: "src/assets/images/teoretyczny03.jpg"
+            },
+        ],
+    },
+    inf04: {
+        title: "INF.04",
+        chapters: [
+            {
+                id: 13,
+                title: "Test teoretyczny INF.04",
+                flashcardCount: 100,
+                image: "src/assets/images/teoretyczny04.jpg"
+            },
+        ],
+    },
+
+
 };
 

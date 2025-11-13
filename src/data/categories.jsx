@@ -36,6 +36,6 @@ export const categories = [
     id: 6,
     title: "Egzamin INF.04",
     deckCount: 100,
-    image: encodeURI(`${imagesPath}/inf03-obraz.png`),
+    image: encodeURI(`${imagesPath}/inf04-obraz.png`),
   },
 ];
