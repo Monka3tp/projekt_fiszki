@@ -1,3 +1,6 @@
+const imagesPath = `${process.env.PUBLIC_URL || ''}/images`;
+
+
 export const deckData = {
     angielski: {
         title: "Język angielski",
@@ -6,13 +9,13 @@ export const deckData = {
                 id: 1,
                 title: "Człowiek",
                 flashcardCount: 100,
-                image: "src/assets/images/angielski-czlowiek.jpg",
+                image: {imagesPath} + "/angielski-czlowiek.jpg",
             },
             {
                 id: 2,
                 title: "Miejsce zamieszkania",
                 flashcardCount: 100,
-                image: "src/assets/images/angielski-dom.jpg",
+                image: {imagesPath} + "/angielski-dom.jpg",
             },
             {
                 id: 3,
@@ -24,7 +27,7 @@ export const deckData = {
                 id: 4,
                 title: "Zwierzęta",
                 flashcardCount: 100,
-                image: "src/assets/images/angielski-zwierzeta.jpg",
+                image: {imagesPath} + "/angielski-zwierzeta.jpg",
             },
             {
                 id: 5,
@@ -36,7 +39,7 @@ export const deckData = {
                 id: 6,
                 title: "Szkoła",
                 flashcardCount: 100,
-                image: "src/assets/images/angielski-czas-przeszly.jpg",
+                image: {imagesPath} + "/angielski-czas-przeszly.jpg",
             },
         ],
     },
@@ -48,7 +51,7 @@ export const deckData = {
                 id: 7,
                 title: "Ortografia",
                 flashcardCount: 100,
-                image: "src/assets/images/ortografia.jpg"
+                image: {imagesPath} + "/ortografia.jpg"
             },
             {
                 id: 8,
