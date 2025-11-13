@@ -9,7 +9,6 @@ import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
     updateProfile,
-    sendEmailVerification,
 } from "firebase/auth";
 
 function LoginForm({ email, setEmail, password, setPassword, onSubmit, loading, error }) {
@@ -158,8 +157,8 @@ export default function LoginRegisterPage() {
             if (displayName && userCredential.user) {
                 try {
                     await updateProfile(userCredential.user, { displayName });
-                } catch (_) {
-                    // ignore profile update errors
+                } catch (err) {
+                    console.error("Błąd podczas ustawiania nazwy użytkownika:", err);
                 }
             }
             navigate("/");
