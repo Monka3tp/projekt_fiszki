@@ -68,7 +68,7 @@
   height: 220px;
   margin-left: -160px;
   margin-top: -110px;
-  transition: transform 360ms cubic-bezier(.2,.9,.2,1), opacity 220ms;
+  transition: transform 420ms cubic-bezier(.22,.9,.18,1), opacity 220ms;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -87,13 +87,10 @@
   align-items: center;
   justify-content: center;
   transform-style: preserve-3d;
-  transition: transform 420ms cubic-bezier(.22,.9,.18,1);
+  transition: none;
   border-radius: 10px;
 }
 
-.card .card-inner.flipped {
-  transform: rotateY(180deg);
-}
 
 .face {
   position: absolute;

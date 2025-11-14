@@ -7,11 +7,13 @@ export default function CreateDeck() {
   const [active, setActive] = useState(0);
   const [inputFocused, setInputFocused] = useState(false);
   const [isFan, setIsFan] = useState(() => window.innerWidth > window.innerHeight || window.innerWidth >= 720);
-  const inputsRef = useRef([]);
+  const inputsRef = useRef([]); // będzie trzymać obiekty { front: el|null, back: el|null }
   const accRef = useRef(0);
   const rafRef = useRef(null);
+  const focusedRef = useRef({ index: null, side: null }); // track which side was focused
 
   useEffect(() => {
+    // zachowaj tablicę refs, przycinając do długości kart
     inputsRef.current = inputsRef.current.slice(0, cards.length);
   }, [cards.length]);
 
@@ -79,7 +81,29 @@ export default function CreateDeck() {
 
   const toggleFlip = (i, e) => {
     e.stopPropagation();
+    // sprawdź, czy któryś input tej karty ma fokus i którą stronę
+    const curRefs = inputsRef.current[i] || {};
+    const activeEl = document.activeElement;
+    const focusedSide =
+      activeEl === curRefs.front ? "front" : activeEl === curRefs.back ? "back" : null;
+
+    // zapamiętaj, jeśli był fokus
+    if (focusedSide) focusedRef.current = { index: i, side: focusedSide };
+
     setCards((prev) => prev.map((c, idx) => (idx === i ? { ...c, flipped: !c.flipped } : c)));
+
+    // po krótkim timeout przenieś fokus na odpowiednią stronę (druga strona)
+    if (focusedSide) {
+      const other = focusedSide === "front" ? "back" : "front";
+      setTimeout(() => {
+        const target = inputsRef.current[i] && inputsRef.current[i][other];
+        if (target) {
+          target.focus();
+          // zaktualizuj tracking
+          focusedRef.current = { index: i, side: other };
+        }
+      }, 40);
+    }
   };
 
   const addCard = () => {
@@ -103,15 +127,53 @@ export default function CreateDeck() {
   const handleInputFocus = (i) => {
     setInputFocused(true);
     setActive(i);
+    focusedRef.current = { index: i, side: "front" }; // domyślnie front jeśli wywołane bez side
   };
 
   const handleInputBlur = () => {
     setTimeout(() => {
       const activeEl = document.activeElement;
-      const stillInput = inputsRef.current.some((el) => el === activeEl);
-      if (!stillInput) setInputFocused(false);
+      // jeśli żaden z inputów w tablicy nie jest aktywny to ustaw inputFocused false
+      const stillInput = inputsRef.current.some((obj) => {
+        if (!obj) return false;
+        return obj.front === activeEl || obj.back === activeEl;
+      });
+      if (!stillInput) {
+        setInputFocused(false);
+        focusedRef.current = { index: null, side: null };
+      }
     }, 0);
   };
+
+  // side-aware focus handler
+  const handleInputFocusSide = (i, side) => {
+    setInputFocused(true);
+    setActive(i);
+    focusedRef.current = { index: i, side };
+  };
+
+  // po zmianie active: jeśli był fokus, przenieś fokus na tę samą stronę nowej aktywnej karty
+  useEffect(() => {
+    if (!inputFocused) return;
+    const f = focusedRef.current;
+    if (!f || !f.side) {
+      // brak informacji o stronie -> spróbuj front
+      setTimeout(() => {
+        const el = inputsRef.current[active] && inputsRef.current[active].front;
+        if (el) el.focus();
+        focusedRef.current = { index: active, side: "front" };
+      }, 30);
+      return;
+    }
+    // jeśli indeks się zmienił, przenieś fokus na active's f.side
+    setTimeout(() => {
+      const el = inputsRef.current[active] && inputsRef.current[active][f.side];
+      if (el) {
+        el.focus();
+        focusedRef.current = { index: active, side: f.side };
+      }
+    }, 30);
+  }, [active, inputFocused]);
 
   const mapNorm = (n) => {
     const pow = 0.85;
@@ -143,6 +205,10 @@ export default function CreateDeck() {
           if (Math.abs(norm) > Math.min(VISIBLE_SIDE, Math.floor(n/2))) {
             return null;
           }
+
+          // logiczne mapowanie stron: jeśli karta jest flipped, to "front face" ma pokazywać zawartość back, i odwrotnie
+          const frontSide = card.flipped ? "back" : "front";
+          const backSide = card.flipped ? "front" : "back";
 
           const mapped = mapNorm(norm);
           const gapDeg = isFan ? 10 : 12;
@@ -195,12 +261,14 @@ export default function CreateDeck() {
           }
 
           const zIndex = isActive ? 400 : 220 - Math.abs(norm) * 8;
-          const transform = `translateX(${x}px) translateY(${y}px) translateZ(${z}px) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg) scale(${scale})`;
+          // jeśli karta jest "flipped" dodajemy obrót 180deg do całego transformu kontenera .card
+          const flipRotation = card.flipped ? " rotateY(180deg)" : "";
+          const transform = `translateX(${x}px) translateY(${y}px) translateZ(${z}px) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg) scale(${scale})${flipRotation}`;
 
           return (
             <div
               key={i}
-              className={`card ${isActive ? "active" : ""}`}
+              className={`card ${isActive ? "active" : ""} ${card.flipped ? "flipped" : ""}`}
               style={{
                 transform,
                 zIndex,
@@ -209,7 +277,7 @@ export default function CreateDeck() {
                 willChange: "transform, opacity",
               }}
             >
-              <div className={`card-inner ${card.flipped ? "flipped" : ""}`}>
+              <div className="card-inner">
                 <span className="flip-toggle" aria-hidden="true">{card.flipped ? "Tył" : "Przód"}</span>
 
                 <button
@@ -237,22 +305,19 @@ export default function CreateDeck() {
                       aria-hidden={false}
                     >
                       <span className="preview-text">
-                        {card.front || <span className="placeholder">Przód</span>}
+                        {card[frontSide] || <span className="placeholder">{frontSide === "front" ? "Przód" : "Tył"}</span>}
                       </span>
                     </div>
                   ) : (
                       <input
                           ref={(el) => {
-                            if (isActive) {
-                              inputsRef.current[i] = el;
-                            } else if (inputsRef.current[i]) {
-                              inputsRef.current[i] = null;
-                            }
+                            inputsRef.current[i] = inputsRef.current[i] || {};
+                            inputsRef.current[i][frontSide] = el || null;
                           }}
-                          placeholder="Przód"
-                          value={card.front}
-                          onChange={(e) => updateCardText(i, "front", e.target.value)}
-                          onFocus={() => handleInputFocus(i)}
+                          placeholder={frontSide === "front" ? "Przód" : "Tył"}
+                          value={card[frontSide]}
+                          onChange={(e) => updateCardText(i, frontSide, e.target.value)}
+                          onFocus={() => handleInputFocusSide(i, frontSide)}
                           onBlur={handleInputBlur}
                           className="seamless-input"
                       />
@@ -275,39 +340,36 @@ export default function CreateDeck() {
                       aria-hidden={false}
                     >
                       <span className="preview-text">
-                        {card.back || <span className="placeholder">Tył</span>}
+                        {card[backSide] || <span className="placeholder">{backSide === "front" ? "Przód" : "Tył"}</span>}
                       </span>
                     </div>
                   ) : (
                       <input
                           ref={(el) => {
-                            if (isActive) {
-                              inputsRef.current[i] = el;
-                            } else if (inputsRef.current[i]) {
-                              inputsRef.current[i] = null;
-                            }
+                            inputsRef.current[i] = inputsRef.current[i] || {};
+                            inputsRef.current[i][backSide] = el || null;
                           }}
-                          placeholder="Tył"
-                          value={card.back}
-                          onChange={(e) => updateCardText(i, "back", e.target.value)}
-                          onFocus={() => handleInputFocus(i)}
+                          placeholder={backSide === "front" ? "Przód" : "Tył"}
+                          value={card[backSide]}
+                          onChange={(e) => updateCardText(i, backSide, e.target.value)}
+                          onFocus={() => handleInputFocusSide(i, backSide)}
                           onBlur={handleInputBlur}
                           className="seamless-input"
                       />
-                  )}
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+                   )}
+                 </div>
+               </div>
+             </div>
+           );
+         })}
+       </div>
 
-      <button className="add-btn" onClick={addCard} aria-label="Dodaj kartę">+</button>
-    </div>
-  );
-}
+       <button className="add-btn" onClick={addCard} aria-label="Dodaj kartę">+</button>
+     </div>
+   );
+ }
 
-// helper: czy indeks jest aktywny (nie nadpisywać później)
-function isActiveIndex(i, active) {
-  return i === active;
-}
+ // helper: czy indeks jest aktywny (nie nadpisywać później)
+ function isActiveIndex(i, active) {
+   return i === active;
+ }

@@ -21,6 +21,7 @@ function Home() {
                     <CategoryCard key={category.id} category={category} />
                 ))}
             </div>
+            <AboutUs />
         </main>
     );
 }
@@ -38,7 +39,6 @@ function App() {
                     <Route path="/:categoryId/:deckId" element={<DeckPage />} />
                     <Route path="/create-flashcard-deck" element={<CreateDeck />} />
                 </Routes>
-                <AboutUs />
             </BrowserRouter>
             <Footer />
         </AuthProvider>
