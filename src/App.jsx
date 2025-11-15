@@ -11,17 +11,82 @@ import { AuthProvider } from "./contexts/AuthContext.jsx";
 import CreateDeck from "./components/CreateDeck.jsx";
 import Footer from "./components/Footer.jsx";
 import AboutUs from "./components/AboutUs.jsx";
+import { useState } from "react";
 
 function Home() {
+    const [search, setSearch] = useState("");
+
+    const filteredCategories = categories.filter((category) =>
+        category.title.toLowerCase().includes(search.toLowerCase())
+    );
+
+    const popularDecks = [
+        { name: "Człowiek", categorySlug: "jezyk-angielski" },
+        { name: "Lalka", categorySlug: "jezyk-polski" },
+        { name: "Ortografia", categorySlug: "jezyk-polski" },
+    ];
+
     return (
+
         <main className="main">
             <h1 className="title">Fiszki</h1>
+            <p className="subtitle">Wybierz kategorię, aby rozpocząć naukę</p>
+
+            <input
+                type="text"
+                placeholder="Wyszukaj kategorię..."
+                className="search-input"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+            />
+            {/*TO JEST TO CO BYLO*/}
+            {/*<div className="grid">*/}
+            {/*    {categories.map((category) => (*/}
+            {/*        <CategoryCard key={category.id} category={category}/>*/}
+            {/*    ))}*/}
+            {/*</div>*/}
+
+
+            {/*TO JEST DODANE PRZEZ MONKE KROMKE JAK COS TO USUN JAkby cos nie dzialalo:))))))*/}
             <div className="grid">
-                {categories.map((category) => (
+                {filteredCategories.map((category) => (
                     <CategoryCard key={category.id} category={category} />
                 ))}
             </div>
-            <AboutUs />
+
+            <div className="stats">
+                <div className="stat-box">
+                    <strong>600+</strong>
+                    <span>Zestawów fiszek</span>
+                </div>
+                <div className="stat-box">
+                    <strong>10 000+</strong>
+                    <span>Fiszek do nauki</span>
+                </div>
+                <div className="stat-box">
+                    <strong>∞</strong>
+                    <span>Możliwości nauki</span>
+                </div>
+            </div>
+
+
+            <section className="popular-section">
+                <h2>Popularne zestawy</h2>
+                <div className="popular-list">
+                    {popularDecks.map((deck, index) => (
+                        <a
+                            key={index}
+                            className="popular-item"
+                            href={`/${deck.categorySlug}/decks`}
+                        >
+                            ⭐ {deck.name}
+                        </a>
+                    ))}
+                </div>
+            </section>
+
+
+            <AboutUs/>
         </main>
     );
 }
