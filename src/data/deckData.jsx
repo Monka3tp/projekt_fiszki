@@ -1,3 +1,6 @@
+const imagesPath = `${process.env.PUBLIC_URL || ''}/images`;
+
+
 export const deckData = {
     angielski: {
         title: "Język angielski",
@@ -6,37 +9,37 @@ export const deckData = {
                 id: 1,
                 title: "Człowiek",
                 flashcardCount: 100,
-                image: "src/assets/images/angielski-czlowiek.jpg",
+                image: {imagesPath} + "/angielski-czlowiek.jpg",
             },
             {
                 id: 2,
                 title: "Miejsce zamieszkania",
                 flashcardCount: 100,
-                image: "src/assets/images/angielski-dom.jpg",
+                image: {imagesPath} + "/angielski-dom.jpg",
             },
             {
                 id: 3,
                 title: "Podróże",
                 flashcardCount: 100,
-                image: "src/assets/images/angielski-podroze.jpg",
+                image: {imagesPath} + "/angielski-podroze.jpg",
             },
             {
                 id: 4,
                 title: "Zwierzęta",
                 flashcardCount: 100,
-                image: "src/assets/images/angielski-zwierzeta.jpg",
+                image: {imagesPath} + "/angielski-zwierzeta.jpg",
             },
             {
                 id: 5,
                 title: "Jedzenie",
                 flashcardCount: 100,
-                image: "src/assets/images/angielski-jedzenie.jpg",
+                image: {imagesPath} + "/angielski-jedzenie.jpg",
             },
             {
                 id: 6,
                 title: "Szkoła",
                 flashcardCount: 100,
-                image: "src/assets/images/angielski-czas-przeszly.jpg",
+                image: {imagesPath} + "/angielski-czas-przeszly.jpg",
             },
         ],
     },
@@ -48,19 +51,19 @@ export const deckData = {
                 id: 7,
                 title: "Ortografia",
                 flashcardCount: 100,
-                image: "src/assets/images/ortografia.jpg"
+                image: {imagesPath} + "/ortografia.jpg"
             },
             {
                 id: 8,
                 title: "Lalka",
                 flashcardCount: 100,
-                image: "src/assets/images/lalka.jpg"
+                image: {imagesPath} + "/lalka.jpg"
             },
             {
                 id: 9,
                 title: "Przypadki",
                 flashcardCount: 100,
-                image: "src/assets/images/przypadki.jpg"
+                image: {imagesPath} + "/przypadki.jpg"
             },
         ],
     },
@@ -71,7 +74,7 @@ export const deckData = {
                 id: 10,
                 title: "Daty",
                 flashcardCount: 100,
-                image: "src/assets/images/daty.jpg"
+                image: {imagesPath} + "/daty.jpg"
             },
         ],
     },
@@ -82,11 +85,34 @@ export const deckData = {
                 id: 11,
                 title: "Człowiek",
                 flashcardCount: 100,
-                image: "src/assets/images/czlowiek-biologia.jpg"
+                image: {imagesPath} + "/czlowiek-biologia.jpg"
             },
         ],
     },
 
-    // możesz dodać kolejne przedmioty analogicznie
+    inf03: {
+        title: "INF.03",
+        chapters: [
+            {
+                id: 12,
+                title: "Test teoretyczny INF.03",
+                flashcardCount: 100,
+                image: {imagesPath} + "/teoretyczny03.jpg"
+            },
+        ],
+    },
+    inf04: {
+        title: "INF.04",
+        chapters: [
+            {
+                id: 13,
+                title: "Test teoretyczny INF.04",
+                flashcardCount: 100,
+                image: {imagesPath} + "/teoretyczny04.jpg"
+            },
+        ],
+    },
+
+
 };
 

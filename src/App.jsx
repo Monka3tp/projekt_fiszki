@@ -8,7 +8,9 @@ import CategoryPage from "./components/CategoryPage.jsx";
 import DeckPage from "./components/DeckPage.jsx";
 import LoginRegisterPage from "./components/LoginRegisterPage.jsx";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
-import TempCreateDeck from "./components/TempCreateDeck.jsx";
+import CreateDeck from "./components/CreateDeck.jsx";
+import Footer from "./components/Footer.jsx";
+import AboutUs from "./components/AboutUs.jsx";
 
 function Home() {
     return (
@@ -19,6 +21,7 @@ function Home() {
                     <CategoryCard key={category.id} category={category} />
                 ))}
             </div>
+            <AboutUs />
         </main>
     );
 }
@@ -34,10 +37,12 @@ function App() {
                     <Route path="/register" element={<LoginRegisterPage />} />
                     <Route path="/:categoryId/decks" element={<CategoryPage />} />
                     <Route path="/:categoryId/:deckId" element={<DeckPage />} />
-                    <Route path="/temp_create" element={<TempCreateDeck />} />
+                    <Route path="/create-flashcard-deck" element={<CreateDeck />} />
                 </Routes>
             </BrowserRouter>
+            <Footer />
         </AuthProvider>
+
     );
 }
 export default App;

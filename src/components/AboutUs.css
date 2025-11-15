@@ -1,0 +1,64 @@
+.aboutus {
+    position: relative;
+    background-image:
+            url("https://cdn-icons-png.flaticon.com/512/505/505159.png"),
+            url("https://cdn-icons-png.flaticon.com/512/2232/2232688.png");
+
+    background-repeat: no-repeat, no-repeat;
+    background-position: left top, right bottom;
+    background-size: 200px, 220px;
+    padding: 80px 20px;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* półprzezroczyste tło na treść */
+.aboutus-overlay {
+    background: rgba(255, 255, 255, 0.85);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.aboutus-container {
+    max-width: 800px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.aboutus-title {
+    font-size: 34px;
+    color: #1d3557;
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+.aboutus-text {
+    font-size: 18px;
+    line-height: 1.7;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Styl responsywny */
+@media (max-width: 768px) {
+    .aboutus {
+        background-size: 120px, 140px;
+        background-position: left bottom, right top;
+        padding: 50px 15px;
+    }
+
+    .aboutus-overlay {
+        padding: 20px;
+    }
+
+    .aboutus-title {
+        font-size: 28px;
+    }
+
+    .aboutus-text {
+        font-size: 16px;
+        line-height: 1.2;
+    }
+}

@@ -11,9 +11,9 @@ function CategoryCard({ category }) {
     };
 
     return (
-        <div className="card" onClick={handleClick}>
+        <div className="cat-card" onClick={handleClick}>
             <img src={category.image} alt={category.title} />
-            <div className="card-info">
+            <div className="cat-card-info">
                 <h3>{category.title}</h3>
                 <p>Ilość zestawów: {category.deckCount}</p>
             </div>
