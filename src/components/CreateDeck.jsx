@@ -3,20 +3,44 @@ import React, { useState, useRef, useEffect } from "react";
 import "./CreateDeck.css";
 
 export default function CreateDeck() {
-  const [cards, setCards] = useState(() => [{ front: "", back: "", flipped: false }]);
+  // każda karta ma teraz też displayedSide: która strona jest aktualnie wyświetlana na faces
+  const [cards, setCards] = useState(() => [{ front: "", back: "", flipped: false, displayedSide: "front", counterRotated: false, buttonFlipped: false }]);
   const [active, setActive] = useState(0);
   const [inputFocused, setInputFocused] = useState(false);
   const [isFan, setIsFan] = useState(() => window.innerWidth > window.innerHeight || window.innerWidth >= 720);
   const inputsRef = useRef([]); // będzie trzymać obiekty { front: el|null, back: el|null }
+  const cardRefs = useRef([]); // refs do DOM kontenerów .card
+  const flipTimeouts = useRef({}); // timeouty mid-flip per card index
   const accRef = useRef(0);
   const rafRef = useRef(null);
-  const focusedRef = useRef({ index: null, side: null }); // track which side was focused
+  const focusedRef = useRef({ index: null });
+  const suppressBlurRef = useRef(false); // podczas flipowania blokuje chwilowe blur
+
+  // Ustaw suppress BEFORE blur (mousedown / touchstart / keydown) — dzięki temu blur handler nie zdąży się wykonać przed click
+  // Przy okazji zapobiegamy focusowaniu przycisku przez preventDefault na mousedown
+  const beginSuppress = (e) => {
+    if (e && typeof e.preventDefault === "function") {
+      // zapobiegamy, by flip-btn przejął fokus
+      e.preventDefault();
+    }
+    suppressBlurRef.current = true;
+  };
 
   useEffect(() => {
     // zachowaj tablicę refs, przycinając do długości kart
     inputsRef.current = inputsRef.current.slice(0, cards.length);
+    cardRefs.current = cardRefs.current.slice(0, cards.length);
   }, [cards.length]);
 
+  // cleanup timeoutów przy unmount
+  useEffect(() => {
+    return () => {
+      Object.values(flipTimeouts.current).forEach((t) => clearTimeout(t));
+      flipTimeouts.current = {};
+    };
+  }, []);
+
+  // Responsive layout mode
   useEffect(() => {
     const onResize = () => setIsFan(window.innerWidth > window.innerHeight || window.innerWidth >= 720);
     window.addEventListener("resize", onResize);
@@ -41,7 +65,12 @@ export default function CreateDeck() {
 
   const applyWheelSteps = (steps) => {
     if (!steps) return;
+    suppressBlurRef.current = true;
     setActive((a) => clampIndex(a + steps));
+    // Reset po krótkim opóźnieniu, aby pozwolić na ustawienie fokusu
+    setTimeout(() => {
+      suppressBlurRef.current = false;
+    }, 100);
   };
 
   const handleWheelDelta = (deltaY) => {
@@ -81,35 +110,129 @@ export default function CreateDeck() {
 
   const toggleFlip = (i, e) => {
     e.stopPropagation();
-    // sprawdź, czy któryś input tej karty ma fokus i którą stronę
+    suppressBlurRef.current = true;
+
     const curRefs = inputsRef.current[i] || {};
     const activeEl = document.activeElement;
     const focusedSide =
       activeEl === curRefs.front ? "front" : activeEl === curRefs.back ? "back" : null;
 
-    // zapamiętaj, jeśli był fokus
     if (focusedSide) focusedRef.current = { index: i, side: focusedSide };
 
-    setCards((prev) => prev.map((c, idx) => (idx === i ? { ...c, flipped: !c.flipped } : c)));
+    // obliczamy docelowy stan flipu (intencja) bazując na aktualnym stanie karty
+    const curCardSnapshot = cards[i] || { front: "", back: "", flipped: false, displayedSide: "front", counterRotated: false };
+    const intendedFlipped = !curCardSnapshot.flipped;
 
-    // po krótkim timeout przenieś fokus na odpowiednią stronę (druga strona)
+    // przełączamy stan flipu (wizualnie) i ustawiamy counterRotated na wartość odpowiadającą bieżącemu flipped (aby uniknąć natychmiastowego obrotu)
+    setCards((prev) => prev.map((c, idx) => (idx === i ? { ...c, flipped: intendedFlipped, counterRotated: curCardSnapshot.flipped, buttonFlipped: curCardSnapshot.flipped } : c)));
+
+    // usuń ewentualny wcześniejszy timeout dla tej karty
+    if (flipTimeouts.current[i]) {
+      clearTimeout(flipTimeouts.current[i]);
+      delete flipTimeouts.current[i];
+    }
+
+    // opóźnij zmianę displayedSide i counterRotated do połowy animacji (mid-flip)
+    const midMs = 120;
+    const intendedDisplayed = intendedFlipped ? "back" : "front";
+    flipTimeouts.current[i] = setTimeout(() => {
+      // w połowie flipu zmieniamy displayedSide i ustawiamy counterRotated zgodnie z intendedFlipped
+      setCards((prev) =>
+        prev.map((c, idx) => (idx === i ? { ...c, displayedSide: intendedDisplayed, counterRotated: intendedFlipped, buttonFlipped: intendedFlipped } : c))
+      );
+      delete flipTimeouts.current[i];
+    }, midMs);
+
     if (focusedSide) {
-      const other = focusedSide === "front" ? "back" : "front";
-      setTimeout(() => {
-        const target = inputsRef.current[i] && inputsRef.current[i][other];
+      let cleaned = false;
+      let fallbackTimer = null;
+      let listenerEl = null;
+
+      // helper: próbuj sfokusować target kilkukrotnie (sync, RAF, timeout)
+      const tryFocusMultiple = (target) => {
+        if (!target) return;
+        try { target.focus(); } catch (err) {console.error(err)}
+        requestAnimationFrame(() => {
+          try { target.focus(); } catch (err) {console.error(err)}
+        });
+        // dodatkowy krótki timeout
+        setTimeout(() => {
+          try { target.focus(); } catch (err) {console.error(err)}
+        }, 60);
+      };
+
+      const doFocus = () => {
+        if (cleaned) return;
+        cleaned = true;
+
+        const target = inputsRef.current[i] && inputsRef.current[i].front;
         if (target) {
-          target.focus();
-          // zaktualizuj tracking
-          focusedRef.current = { index: i, side: other };
+          try {
+            // wielokrotne podejście — synchron, raf i timeout
+            tryFocusMultiple(target);
+            const len = (target.value || "").length;
+            target.setSelectionRange && target.setSelectionRange(len, len);
+          } catch (err) {
+            console.error(err);
+          }
+          setInputFocused(true);
+          focusedRef.current = { index: i };
         }
+
+        // przywróć obsługę blur i sprzątnij listener/fallback
+        suppressBlurRef.current = false;
+        if (listenerEl) {
+          listenerEl.removeEventListener("transitionend", onTransEnd);
+          listenerEl = null;
+        }
+        if (fallbackTimer) {
+          clearTimeout(fallbackTimer);
+          fallbackTimer = null;
+        }
+      };
+
+      function onTransEnd(ev) {
+        if (ev.propertyName === "transform") doFocus();
+      }
+
+      // dodaj listener na aktualnym elemencie po re-renderze (next paint)
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          listenerEl = cardRefs.current[i] || null;
+          if (listenerEl) {
+            listenerEl.addEventListener("transitionend", onTransEnd);
+          }
+          // fallback: jeśli transitionend nie nadejdzie, spróbuj przez RAF lub wymuś doFocus po czasie
+          fallbackTimer = setTimeout(() => {
+            requestAnimationFrame(() => requestAnimationFrame(doFocus));
+          }, 520);
+        });
+      });
+    } else {
+      // brak fokusu wcześniej — szybko przywracamy obsługę blur
+      setTimeout(() => {
+        suppressBlurRef.current = false;
       }, 40);
     }
   };
 
   const addCard = () => {
     const newIndex = cards.length;
-    setCards((prev) => [...prev, { front: "", back: "", flipped: false }]);
+    setCards((prev) => [...prev, { front: "", back: "", flipped: false, displayedSide: "front", counterRotated: false, buttonFlipped: false }]);
     setActive(newIndex);
+    if (inputFocused) {
+      setInputFocused(true);
+      focusedRef.current = { index: newIndex };
+      // Opóźnij fokus, aby dać czas na render nowej karty
+      setTimeout(() => {
+        const el = inputsRef.current[newIndex] && inputsRef.current[newIndex].front;
+        if (el) {
+          el.focus();
+          const len = (el.value || "").length;
+          el.setSelectionRange && el.setSelectionRange(len, len);
+        }
+      }, 50);
+    }
   };
 
   const updateCardText = (i, side, value) => {
@@ -124,13 +247,11 @@ export default function CreateDeck() {
     setInputFocused(false);
   };
 
-  const handleInputFocus = (i) => {
-    setInputFocused(true);
-    setActive(i);
-    focusedRef.current = { index: i, side: "front" }; // domyślnie front jeśli wywołane bez side
-  };
 
   const handleInputBlur = () => {
+    // jeśli blur spowodowany jest zamierzoną akcją flip (suppress), ignorujemy go
+    if (suppressBlurRef.current) return;
+    console.log("Input blur detected");
     setTimeout(() => {
       const activeEl = document.activeElement;
       // jeśli żaden z inputów w tablicy nie jest aktywny to ustaw inputFocused false
@@ -140,40 +261,47 @@ export default function CreateDeck() {
       });
       if (!stillInput) {
         setInputFocused(false);
-        focusedRef.current = { index: null, side: null };
+        focusedRef.current = { index: null };
       }
     }, 0);
   };
 
   // side-aware focus handler
-  const handleInputFocusSide = (i, side) => {
+  const handleInputFocusSide = (i) => {
     setInputFocused(true);
     setActive(i);
-    focusedRef.current = { index: i, side };
+    focusedRef.current = { index: i };
   };
 
-  // po zmianie active: jeśli był fokus, przenieś fokus na tę samą stronę nowej aktywnej karty
+  // po zmianie active: jeśli był fokus (focusedRef.index !== null), przenieś fokus na tę samą stronę nowej aktywnej karty, ale jeśli strona nie jest widoczna, użyj widocznej strony
   useEffect(() => {
-    if (!inputFocused) return;
-    const f = focusedRef.current;
-    if (!f || !f.side) {
-      // brak informacji o stronie -> spróbuj front
-      setTimeout(() => {
-        const el = inputsRef.current[active] && inputsRef.current[active].front;
-        if (el) el.focus();
-        focusedRef.current = { index: active, side: "front" };
-      }, 30);
-      return;
-    }
-    // jeśli indeks się zmienił, przenieś fokus na active's f.side
-    setTimeout(() => {
-      const el = inputsRef.current[active] && inputsRef.current[active][f.side];
-      if (el) {
-        el.focus();
-        focusedRef.current = { index: active, side: f.side };
-      }
-    }, 30);
-  }, [active, inputFocused]);
+    if (focusedRef.current.index === null) return;
+    const curCard = cards[active];
+    if (!curCard) return;
+
+    // Zawsze fokusuj front (widoczny input)
+    const sideToFocus = "front";
+
+    // Użyj podwójnego RAF dla lepszego timing, jak w toggleFlip
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const el = inputsRef.current[active] && inputsRef.current[active][sideToFocus];
+        if (el) {
+          el.focus();
+          setInputFocused(true);
+          focusedRef.current = { index: active };
+          // Dodatkowy fallback: wymuś focus ponownie po krótkim czasie, jeśli nie został ustawiony
+          setTimeout(() => {
+            if (document.activeElement !== el) {
+              el.focus();
+            }
+          }, 50);
+        }
+      });
+    });
+  }, [active, cards]);
+
+
 
   const mapNorm = (n) => {
     const pow = 0.85;
@@ -193,6 +321,7 @@ export default function CreateDeck() {
       onTouchEnd={onTouchEnd}
       style={{ touchAction: "none" }}
     >
+      <input type={"text"} className={"title-input"} placeholder={"Tytuł"}/>
       <div className="wheel" style={{ transformStyle: "preserve-3d" }}>
         {cards.map((card, i) => {
           const n = cards.length;
@@ -206,9 +335,9 @@ export default function CreateDeck() {
             return null;
           }
 
-          // logiczne mapowanie stron: jeśli karta jest flipped, to "front face" ma pokazywać zawartość back, i odwrotnie
-          const frontSide = card.flipped ? "back" : "front";
-          const backSide = card.flipped ? "front" : "back";
+          // displayedSide decyduje, jaka wartość jest aktualnie renderowana na fronts/backs
+          const displayedFrontKey = card.displayedSide || "front";
+          const displayedBackKey = displayedFrontKey === "front" ? "back" : "front";
 
           const mapped = mapNorm(norm);
           const gapDeg = isFan ? 10 : 12;
@@ -222,7 +351,7 @@ export default function CreateDeck() {
           let y = Math.sin(angleRad) * radius * amplitudeMultiplier * (isFan ? 0.15 : 1);
           let z = Math.cos(angleRad) * radius - radius - Math.abs(mapped) * (isFan ? 8 : 12);
           let rotateY = 0;
-          let rotateZ = isFan ? angleDeg * 0.35 : angleDeg * 0.7;
+          let rotateZ = isFan ? angleDeg * 0.35 : 0;
 
           if (isFan) {
             // amplitude falls with distance: central cards stick out more, outer ones less
@@ -268,20 +397,24 @@ export default function CreateDeck() {
           return (
             <div
               key={i}
-              className={`card ${isActive ? "active" : ""} ${card.flipped ? "flipped" : ""}`}
+              className={`card ${isActive ? "active" : ""} ${card.flipped ? "flipped" : ""} ${card.counterRotated ? "flip-ready" : ""} ${card.buttonFlipped ? "buttons-flipped" : ""}`}
+              ref={(el) => { cardRefs.current[i] = el || null; }}
               style={{
                 transform,
                 zIndex,
                 opacity,
-                transition: "transform 420ms cubic-bezier(.22,.9,.18,1), opacity 220ms",
+                transition: "transform 420ms cubic-bezier(.22,.15,.18,1), opacity 220ms",
                 willChange: "transform, opacity",
               }}
             >
               <div className="card-inner">
-                <span className="flip-toggle" aria-hidden="true">{card.flipped ? "Tył" : "Przód"}</span>
+                <span className="flip-toggle" style={{zIndex: 5}}>{card.buttonFlipped ? "Tył" : "Przód"}</span>
 
                 <button
                     className="flip-btn"
+                    onMouseDown={(e) => beginSuppress(e)}
+                    onTouchStart={(e) => beginSuppress(e)}
+                    onKeyDown={(ev) => { if (ev.key === " " || ev.key === "Enter") beginSuppress(ev); }}
                     onClick={(e) => toggleFlip(i, e)}
                     type="button"
                     aria-label="Flip card"
@@ -305,19 +438,20 @@ export default function CreateDeck() {
                       aria-hidden={false}
                     >
                       <span className="preview-text">
-                        {card[frontSide] || <span className="placeholder">{frontSide === "front" ? "Przód" : "Tył"}</span>}
+                        {card[displayedFrontKey] || <span className="placeholder">{displayedFrontKey === "front" ? "Przód" : "Tył"}</span>}
                       </span>
                     </div>
                   ) : (
                       <input
                           ref={(el) => {
                             inputsRef.current[i] = inputsRef.current[i] || {};
-                            inputsRef.current[i][frontSide] = el || null;
+                            // store physical front input under stable key 'front'
+                            inputsRef.current[i].front = el || null;
                           }}
-                          placeholder={frontSide === "front" ? "Przód" : "Tył"}
-                          value={card[frontSide]}
-                          onChange={(e) => updateCardText(i, frontSide, e.target.value)}
-                          onFocus={() => handleInputFocusSide(i, frontSide)}
+                          placeholder={displayedFrontKey === "front" ? "Przód" : "Tył"}
+                          value={card[displayedFrontKey]}
+                          onChange={(e) => updateCardText(i, displayedFrontKey, e.target.value)}
+                          onFocus={() => handleInputFocusSide(i)}
                           onBlur={handleInputBlur}
                           className="seamless-input"
                       />
@@ -340,19 +474,20 @@ export default function CreateDeck() {
                       aria-hidden={false}
                     >
                       <span className="preview-text">
-                        {card[backSide] || <span className="placeholder">{backSide === "front" ? "Przód" : "Tył"}</span>}
+                        {card[displayedBackKey] || <span className="placeholder">{displayedBackKey === "front" ? "Przód" : "Tył"}</span>}
                       </span>
                     </div>
                   ) : (
                       <input
                           ref={(el) => {
                             inputsRef.current[i] = inputsRef.current[i] || {};
-                            inputsRef.current[i][backSide] = el || null;
+                            // store physical back input under stable key 'back'
+                            inputsRef.current[i].back = el || null;
                           }}
-                          placeholder={backSide === "front" ? "Przód" : "Tył"}
-                          value={card[backSide]}
-                          onChange={(e) => updateCardText(i, backSide, e.target.value)}
-                          onFocus={() => handleInputFocusSide(i, backSide)}
+                          placeholder={displayedBackKey === "front" ? "Przód" : "Tył"}
+                          value={card[displayedBackKey]}
+                          onChange={(e) => updateCardText(i, displayedBackKey, e.target.value)}
+                          onFocus={() => handleInputFocusSide(i)}
                           onBlur={handleInputBlur}
                           className="seamless-input"
                       />
@@ -363,8 +498,32 @@ export default function CreateDeck() {
            );
          })}
        </div>
+        <div className="deck-controls">
+          <button className={"discard-btn"} type="button" onClick={() => {
+            setCards([{ front: "", back: "", flipped: false, displayedSide: "front", counterRotated: false, buttonFlipped: false }]);
+            setActive(0);
+            setInputFocused(false);
+          }} aria-label="Usuń wszystkie karty">
+            <i className="bi bi-trash-fill" aria-hidden="true"></i>
+          </button>
+          <button
+           className="add-btn"
+           onMouseDown={(e) => beginSuppress(e)}
+           onTouchStart={(e) => beginSuppress(e)}
+           onKeyDown={(ev) => { if (ev.key === " " || ev.key === "Enter") beginSuppress(ev); }}
+           onClick={addCard}
+           aria-label="Dodaj kartę"
+          >
+           +
+          </button>
+          <button className={"save-btn"} type="button" onClick={() => {
+            // tutaj można dodać logikę zapisywania talii
+            console.log("Zapisano talię:", cards);
+          }} aria-label="Zapisz talię">
+            <i className="bi bi-floppy-fill" aria-hidden="true"></i>
+          </button>
+        </div>
 
-       <button className="add-btn" onClick={addCard} aria-label="Dodaj kartę">+</button>
      </div>
    );
  }
