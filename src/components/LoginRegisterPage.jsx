@@ -131,7 +131,6 @@ export default function LoginRegisterPage() {
     const navigate = useNavigate();
 
     const [destination, setDestination] = useState(location.state?.from || "/");
-    console.log(destination);
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -163,9 +162,27 @@ export default function LoginRegisterPage() {
             navigate(destination);
         } catch (err) {
             setMessage(err.message || "Błąd logowania");
+            setMessageType("error");
             setLoading(false);
         }
     };
+
+    const identifyError = (error) => {
+        if (error.code) {
+            switch (error.code) {
+                case 'auth/user-not-found':
+                    return { message: "Nie znaleziono użytkownika o podanym adresie e-mail.", messageType: "danger" };
+                case 'auth/wrong-password':
+                    return { message: "Nieprawidłowe hasło.", messageType: "danger" };
+                case 'auth/email-already-in-use':
+                    return { message: "Podany adres e-mail jest już używany przez innego użytkownika.", messageType: "danger" };
+                case 'auth/weak-password':
+                    return { message: "Hasło jest zbyt słabe. Proszę użyć silniejszego hasła.", messageType: "warning" };
+                default:
+                    return { message: "Wystąpił błąd podczas przetwarzania żądania.", messageType: "danger" };
+            }
+        }
+    }
 
     const handleRegister = async (e) => {
         e.preventDefault();
@@ -182,7 +199,9 @@ export default function LoginRegisterPage() {
             }
             navigate(`/${destination}`);
         } catch (err) {
-            setMessage(err.message || "Błąd rejestracji");
+            const identifiedError = identifyError(err);
+            setMessage(identifiedError.message);
+            setMessageType(identifiedError.messageType);
             setLoading(false);
         }
     };
