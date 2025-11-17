@@ -1,8 +1,13 @@
-// File: `src/components/CreateDeck.jsx`
 import React, { useState, useRef, useEffect } from "react";
 import "./CreateDeck.css";
+import {useAuth} from "../contexts/AuthContext.jsx";
+import {useNavigate} from "react-router-dom";
+import {GridLoader} from "react-spinners";
 
 export default function CreateDeck() {
+  const {user, loading} = useAuth();
+  const navigate = useNavigate();
+
   // każda karta ma teraz też displayedSide: która strona jest aktualnie wyświetlana na faces
   const [cards, setCards] = useState(() => [{ front: "", back: "", flipped: false, displayedSide: "front", counterRotated: false, buttonFlipped: false }]);
   const [active, setActive] = useState(0);
@@ -301,12 +306,30 @@ export default function CreateDeck() {
     });
   }, [active, cards]);
 
-
-
   const mapNorm = (n) => {
     const pow = 0.85;
     return Math.sign(n) * Math.pow(Math.abs(n), pow);
   };
+
+  useEffect(() => {
+    if (loading === false && user === null) {
+      navigate("/login", {
+        state: {
+          message: "Musisz być zalogowany, aby tworzyć zestawy fiszek.",
+          messageType: "warning",
+          from: "/create-deck",
+        },
+      });
+    }
+  }, [loading, user, navigate]);
+
+  // dopiero tutaj, po wszystkich hookach, zwróć loader podczas ładowania
+  if (loading) {
+    return <div className="loader-container" style={{display: "flex", justifyContent: "center", margin: "50px"}}>
+      <GridLoader color={"#9b4dff"} size={15} />
+    </div>;
+  }
+
 
   // ile kart po każdej stronie ma być widocznych (główna karta + N po każdej stronie)
   const VISIBLE_SIDE = 4;

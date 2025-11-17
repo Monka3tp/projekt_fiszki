@@ -11,12 +11,9 @@ if (typeof window !== 'undefined') {
     }
     // store so InstallButton (or other late code) can pick it up
     window.__DEFERRED_BEFORE_INSTALL_PROMPT = e;
-    console.info('[pwa] beforeinstallprompt captured early');
   });
 }
 
-console.log('Rejestracja ServiceWorker...');
 window.addEventListener('load', () => {
-  console.log('Rejestracja ServiceWorker...');
   register();
 });
