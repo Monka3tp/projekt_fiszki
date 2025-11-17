@@ -1,12 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
-import "./CreateDeck.css";
+import "./EditDeck.css";
 import {useAuth} from "../contexts/AuthContext.jsx";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {GridLoader} from "react-spinners";
+import { createDeck, updateDeck, getDeckById } from "../services/deckService.js";
 
-export default function CreateDeck() {
+export default function EditDeck() {
   const {user, loading} = useAuth();
   const navigate = useNavigate();
+  
+  const deckId = useParams().deckId;
 
   // każda karta ma teraz też displayedSide: która strona jest aktualnie wyświetlana na faces
   const [cards, setCards] = useState(() => [{ front: "", back: "", flipped: false, displayedSide: "front", counterRotated: false, buttonFlipped: false }]);
@@ -21,6 +24,27 @@ export default function CreateDeck() {
   const focusedRef = useRef({ index: null });
   const suppressBlurRef = useRef(false); // podczas flipowania blokuje chwilowe blur
 
+  const [visible, setVisible] = useState("public");
+
+  
+  useEffect(() => {
+    if (deckId && deckId !== "new") {
+      getDeckById(deckId).then((data) => {
+        if (data) {
+          if (data.ownerId !== user.uid) {
+            console.error("Unauthorized access to deck");
+            navigate("/", { replace: true });
+            return;
+          }
+          setCards(data.map(card => ({ front: card.front, back: card.back, flipped: false, displayedSide: "front", counterRotated: false, buttonFlipped: false })));
+        } else {
+          console.error("Deck not found");
+          navigate("/", { replace: true });
+        }
+      });
+    }
+  }, [deckId, user, navigate]);
+  
   // Ustaw suppress BEFORE blur (mousedown / touchstart / keydown) — dzięki temu blur handler nie zdąży się wykonać przed click
   // Przy okazji zapobiegamy focusowaniu przycisku przez preventDefault na mousedown
   const beginSuppress = (e) => {
@@ -311,13 +335,38 @@ export default function CreateDeck() {
     return Math.sign(n) * Math.pow(Math.abs(n), pow);
   };
 
+  const handleSave = (e) => {
+    e.preventDefault();
+    const deckData = {
+      cards: cards.map((c) => ({ front: c.front, back: c.back })),
+      visible: visible,
+    };
+    if (deckId && deckId !== "new") {
+      updateDeck(deckId, deckData)
+        .then(() => {
+          navigate(`/deck/${deckId}`);
+        })
+        .catch((err) => {
+          console.error("Error updating deck:", err);
+        });
+    } else {
+      createDeck({ ...deckData, ownerId: user.uid })
+        .then((newDeckId) => {
+          navigate(`/deck/${newDeckId}`);
+        })
+        .catch((err) => {
+          console.error("Error creating deck:", err);
+        });
+    }
+  }
+
   useEffect(() => {
     if (loading === false && user === null) {
       navigate("/login", {
         state: {
           message: "Musisz być zalogowany, aby tworzyć zestawy fiszek.",
           messageType: "warning",
-          from: "/create-deck",
+          from: location.pathname,
         },
       });
     }
@@ -344,7 +393,14 @@ export default function CreateDeck() {
       onTouchEnd={onTouchEnd}
       style={{ touchAction: "none" }}
     >
-      <input type={"text"} className={"title-input"} placeholder={"Tytuł"}/>
+      <div className="deck-editor" style={{display: "flex", justifyContent: "center"}}>
+        <input type={"text"} className={"title-input"} placeholder={"Tytuł"}/>
+        <select className={"form-select visibility-select"} defaultValue={"public"} value={visible} onChange={(e) => setVisible(e.target.value)}>
+          <option value={"public"}>Publiczny</option>
+          <option value={"unlisted"}>Niepubliczny</option>
+          <option value={"private"}>Prywatny</option>
+        </select>
+      </div>
       <div className="wheel" style={{ transformStyle: "preserve-3d" }}>
         {cards.map((card, i) => {
           const n = cards.length;
@@ -521,16 +577,23 @@ export default function CreateDeck() {
            );
          })}
        </div>
-        <div className="deck-controls">
-          <button className={"discard-btn"} type="button" onClick={() => {
-            setCards([{ front: "", back: "", flipped: false, displayedSide: "front", counterRotated: false, buttonFlipped: false }]);
-            setActive(0);
+        <div className="deck-controls" style={{width: "100%"}}>
+          <button className={"deck-button delete-btn"} type="button" disabled={cards.length<=1} onClick={() => {
+            setCards((prev) => {
+              if (prev.length <= 1) return prev;
+              const newCards = prev.filter((_, idx) => idx !== active);
+              if (active >= newCards.length) {
+                setActive(Math.max(0, newCards.length - 1));
+              }
+              return newCards;
+            });
             setInputFocused(false);
-          }} aria-label="Usuń wszystkie karty">
+          }} aria-label="Usuń kartę">
             <i className="bi bi-trash-fill" aria-hidden="true"></i>
+            Usuń
           </button>
           <button
-           className="add-btn"
+           className="deck-button add-btn"
            onMouseDown={(e) => beginSuppress(e)}
            onTouchStart={(e) => beginSuppress(e)}
            onKeyDown={(ev) => { if (ev.key === " " || ev.key === "Enter") beginSuppress(ev); }}
@@ -539,10 +602,8 @@ export default function CreateDeck() {
           >
            +
           </button>
-          <button className={"save-btn"} type="button" onClick={() => {
-            // tutaj można dodać logikę zapisywania talii
-            console.log("Zapisano talię:", cards);
-          }} aria-label="Zapisz talię">
+          <button className={"deck-button save-btn"} type="button" onClick={(e) => handleSave(e)} aria-label="Zapisz talię">
+            Zapisz
             <i className="bi bi-floppy-fill" aria-hidden="true"></i>
           </button>
         </div>

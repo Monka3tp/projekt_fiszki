@@ -21,9 +21,12 @@ body {
 }
 
 .main {
-    max-width: 1000px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+    flex: 1 1 auto;
+  min-height: 0;
+  /* jeśli margin-y zaburzają layout, użyj margin: 0 auto oraz padding */
+  margin: 2rem auto;
+  max-width: 1000px;
+  width: 100%;
 }
 
 .title {
@@ -36,6 +39,8 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
+    align-items: center;
+    justify-items: center;
 }
 .link {
     color: #9b4dff;
@@ -171,11 +176,55 @@ body::after {
     box-shadow: 0 0 40px #00000022;
     z-index: -1;
 }
-
 body::before {
     left: 0;
 }
 
 body::after {
     right: 0;
+}
+
+@media (max-width: 600px) {
+    body::before,
+    body::after {
+        display: none;
+    }
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* upewnij się, że stopka nie ma pozycji fixed/absolute */
+footer {
+  /* przykładowe style stupki */
+  padding: 1rem;
+  background: #f8f9fa;
+    position: relative;
+}
+
+.page {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+    justify-content: center;
+}
+
+.page > * {
+  flex: 1 1 auto;
 }

@@ -13,12 +13,22 @@ import {
 const decksCol = collection(db, "decks");
 
 export function createDeck(uid, payload) {
-    return addDoc(decksCol, { ...payload, owner: uid, createdAt: new Date() });
+    return addDoc(decksCol, { ...payload, ownerId: uid, createdAt: new Date() });
 }
 
 export function updateDeck(id, payload) {
     const ref = doc(db, "decks", id);
     return updateDoc(ref, { ...payload, updatedAt: new Date() });
+}
+
+export async function getDeckById(id) {
+    const ref = doc(db, "decks", id);
+    const snap = await ref.get();
+    if (snap.exists()) {
+        return { id: snap.id, ...snap.data() };
+    } else {
+        throw new Error("Deck not found");
+    }
 }
 
 export function getPublicDecks(setter) {

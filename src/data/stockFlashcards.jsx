@@ -82,7 +82,7 @@ const stockFlashcards = {
                 back: "knee"
             }
         ],
-        isPublic: true,
+        visible: "public",
         ownerId: "0"
     },
     angielski_miejsce_zamieszkania: {
@@ -168,7 +168,7 @@ const stockFlashcards = {
                 back: "chair"
             }
         ],
-        isPublic: true,
+        visible: "public",
         ownerId: "0"
     },
     angielski_podroze: {
@@ -214,7 +214,7 @@ const stockFlashcards = {
                 back: "tour guide"
             }
         ],
-        isPublic: true,
+        visible: "public",
         ownerId: "0"
     },
     angielski_zwierzeta: {
@@ -280,7 +280,7 @@ const stockFlashcards = {
                 back: "frog"
             }
         ],
-        isPublic: true,
+        visible: "public",
         ownerId: "0"
     },
     angielski_jedzenie: {
@@ -346,7 +346,7 @@ const stockFlashcards = {
                 back: "water"
             }
         ],
-        isPublic: true,
+        visible: "public",
         ownerId: "0"
     },
     angielski_szkola: {
@@ -412,7 +412,7 @@ const stockFlashcards = {
                 back: "backpack"
             }
         ],
-        isPublic: true,
+        visible: "public",
         ownerId: "0"
     },
     poslki_ortografia: {
@@ -458,7 +458,7 @@ const stockFlashcards = {
                 front: "_yczenia"
             }
         ],
-        isPublic: true,
+        visible: "public",
         ownerId: "0"
     },
     polski_lektura_lalka: {
@@ -484,7 +484,7 @@ const stockFlashcards = {
                 back: "realistycznej"
             }
         ],
-        isPublic: true,
+        visible: "public",
         ownerId: "0"
     },
     polski_przypadki: {
@@ -530,7 +530,7 @@ const stockFlashcards = {
                 back: "kotom"
             }
         ],
-        isPublic: true,
+        visible: "public",
         ownerId: "0"
     },
     historia_daty: {
@@ -576,7 +576,7 @@ const stockFlashcards = {
                 back: "1981"
             }
         ],
-        isPublic: true,
+        visible: "public",
         ownerId: "0"
     },
     biologia_czlowiek: {
@@ -642,7 +642,7 @@ const stockFlashcards = {
                 back: "układ nerwowy"
             }
         ],
-        isPublic: true,
+        visible: "public",
         ownerId: "0"
     },
     inf03: {
@@ -708,7 +708,7 @@ const stockFlashcards = {
                 back: "HTTPS"
             }
         ],
-        isPublic: true,
+        visible: "public",
         ownerId: "0"
     },
     inf04: {
@@ -830,7 +830,7 @@ const stockFlashcards = {
                 back: "NTP"
             }
         ],
-        isPublic: true,
+        visible: "public",
         ownerId: "0"
     }
 

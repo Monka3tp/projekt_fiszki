@@ -1,4 +1,5 @@
 import "./CategoryCard.css";
+import "../App.css";
 import {useNavigate, useParams} from "react-router-dom";
 import { makeSlug } from "../services/tools.jsx";
 

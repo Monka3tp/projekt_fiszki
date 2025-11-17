@@ -1,3 +1,4 @@
+// `src/App.jsx`
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./App.css";
 import Header from "./components/Header";
@@ -8,7 +9,7 @@ import CategoryPage from "./components/CategoryPage.jsx";
 import DeckPage from "./components/DeckPage.jsx";
 import LoginRegisterPage from "./components/LoginRegisterPage.jsx";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
-import CreateDeck from "./components/CreateDeck.jsx";
+import EditDeck from "./components/EditDeck.jsx";
 import Footer from "./components/Footer.jsx";
 import AboutUs from "./components/AboutUs.jsx";
 import { useState } from "react";
@@ -27,7 +28,6 @@ function Home() {
     ];
 
     return (
-
         <main className="main">
             <h1 className="title">Fiszki</h1>
             <p className="subtitle">Wybierz kategorię, aby rozpocząć naukę</p>
@@ -39,15 +39,7 @@ function Home() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
             />
-            {/*TO JEST TO CO BYLO*/}
-            {/*<div className="grid">*/}
-            {/*    {categories.map((category) => (*/}
-            {/*        <CategoryCard key={category.id} category={category}/>*/}
-            {/*    ))}*/}
-            {/*</div>*/}
 
-
-            {/*TO JEST DODANE PRZEZ MONKE KROMKE JAK COS TO USUN JAkby cos nie dzialalo:))))))*/}
             <div className="grid">
                 {filteredCategories.map((category) => (
                     <CategoryCard key={category.id} category={category} />
@@ -69,7 +61,6 @@ function Home() {
                 </div>
             </div>
 
-
             <section className="popular-section">
                 <h2>Popularne zestawy</h2>
                 <div className="popular-list">
@@ -85,7 +76,6 @@ function Home() {
                 </div>
             </section>
 
-
             <AboutUs/>
         </main>
     );
@@ -94,20 +84,28 @@ function Home() {
 function App() {
     return (
         <AuthProvider>
-            <BrowserRouter>
-                <Header />
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/login" element={<LoginRegisterPage />} />
-                    <Route path="/register" element={<LoginRegisterPage />} />
-                    <Route path="/:categoryId/decks" element={<CategoryPage />} />
-                    <Route path="/:categoryId/:deckId" element={<DeckPage />} />
-                    <Route path="/create-deck" element={<CreateDeck />} />
-                </Routes>
-            </BrowserRouter>
-            <Footer />
-        </AuthProvider>
+            <div className={"app"}>
 
+                <BrowserRouter>
+                    <div className="content">
+                        <Header />
+                        <div className={"page"}>
+                            <Routes>
+                                <Route path="/" element={<Home />} />
+                                <Route path="/login" element={<LoginRegisterPage />} />
+                                <Route path="/register" element={<LoginRegisterPage />} />
+                                <Route path="/:categoryId/decks" element={<CategoryPage />} />
+                                <Route path="/:categoryId/:deckId" element={<DeckPage />} />
+                                <Route path="/edit-deck/:deckId" element={<EditDeck />} />
+                            </Routes>
+                        </div>
+                        <Footer />
+                    </div>
+                </BrowserRouter>
+            </div>
+        </AuthProvider>
     );
 }
 export default App;
+
+/* `src/App.css` */
