@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
-import DeckCard from "./DeckCard.jsx";
 import "../App.css";
+import DeckCard from "./DeckCard.jsx";
 import { deckData } from "../data/deckData.jsx";
 
 function CategoryPage() {
