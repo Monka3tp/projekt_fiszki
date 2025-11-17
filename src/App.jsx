@@ -37,7 +37,7 @@ function App() {
                     <Route path="/register" element={<LoginRegisterPage />} />
                     <Route path="/:categoryId/decks" element={<CategoryPage />} />
                     <Route path="/:categoryId/:deckId" element={<DeckPage />} />
-                    <Route path="/create-flashcard-deck" element={<CreateDeck />} />
+                    <Route path="/create-deck" element={<CreateDeck />} />
                 </Routes>
             </BrowserRouter>
             <Footer />
