@@ -1,6 +1,6 @@
 // javascript
 // src/components/MyDecks.jsx
-import {useLocation, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import "../App.css";
 import DeckCard from "./DeckCard.jsx";
 import {getUserDecks} from "../services/deckService.js";
@@ -47,7 +47,7 @@ function MyDecksPage() {
         {decks && decks.length > 0 ? (
           decks.map((d) => <DeckCard key={d.id} deck={d} category={"userDecks"} />)
         ) : (
-          <p>Brak zestawów dla tego użytkownika.</p>
+            <p>Nie masz jeszcze żadnych zestawów. <Link className={"link"} to={"/edit-deck/new"}>Utwrórz zestaw teraz</Link>!</p>
         )}
       </div>
     </main>

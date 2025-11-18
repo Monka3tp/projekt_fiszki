@@ -1,18 +1,23 @@
 // javascript
 // file: 'src/components/DeckPage.jsx'
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useRef, useState} from "react";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import "bootstrap/dist/css/bootstrap.css";
 import "./EditDeck.css";
 import "./DeckPage.css"
 import {stockFlashcards} from "../data/stockFlashcards.jsx";
 import {getDeckById} from "../services/deckService.js";
+import {useAuth} from "../contexts/AuthContext.jsx";
 
 function makeUid() {
     return `${Date.now().toString(36)}_${Math.random().toString(36).slice(2,9)}`;
 }
 
 function DeckPage() {
+    const navigate = useNavigate();
+    const { user, loading } = useAuth();
+
     const categoryId = useParams().categoryId || null;
     const deckId = useParams().deckId || null;
     const isStock = categoryId !== null && deckId !== null;
@@ -30,9 +35,14 @@ function DeckPage() {
         buttonFlipped: false,
         uid: makeUid()
     }]);
-    const [_learnedCards, setLearnedCards] = useState([]);
+    const [learnedCards, setLearnedCards] = useState([]);
+    const [learningProgress, setLearningProgress] = useState(0);
+    const [isOwneredByUser, setIsOwnedByUser] = useState(false);
+    
+    useEffect(() => {
+        setLearningProgress(cards.length > 0 ? (learnedCards.length / (cards.length + learnedCards.length)) : 0);
+    }, [cards, learnedCards, learningProgress, setLearningProgress]);
 
-    const wrapperRef = useRef(null);
 
     // swipe state
     const [swipeOffset, setSwipeOffset] = useState(0);
@@ -58,6 +68,7 @@ function DeckPage() {
 
     useEffect(() => {
         if (!deck || !deck.cards) return;
+
         setCards(deck.cards.map(card => ({
             ...card,
             flipped: false,
@@ -67,12 +78,6 @@ function DeckPage() {
             uid: card.uid || makeUid()
         })));
     }, [deck]);
-
-    useEffect(() => {
-        if (wrapperRef.current && typeof wrapperRef.current.focus === "function") {
-            wrapperRef.current.focus();
-        }
-    }, []);
 
     useEffect(() => {
         const step = () => {
@@ -88,26 +93,6 @@ function DeckPage() {
         const n = cards.length;
         if (n === 0) return 0;
         return ((i % n) + n) % n;
-    };
-
-    const applyWheelSteps = (steps) => {
-        if (!steps) return;
-        setActive((a) => clampIndex(a + steps));
-    };
-
-    const handleWheelDelta = (deltaY) => {
-        const wheelStep = 100;
-        accRef.current += deltaY;
-        const steps = Math.trunc(accRef.current / wheelStep);
-        if (steps !== 0) {
-            applyWheelSteps(steps);
-            accRef.current -= steps * wheelStep;
-        }
-    };
-
-    const onWheel = (e) => {
-        handleWheelDelta(e.deltaY);
-        e.preventDefault();
     };
 
     const onTouchStart = (e) => {
@@ -159,15 +144,16 @@ function DeckPage() {
                 return [...without, card];
             });
         }
+        setSwipeOffset(0);
 
         // po aktualizacji kart zdejmujemy "pending" i ustawiamy właściwy active
+        const COMMIT_ANIM_MS = 60; // dopasowane do 420ms animacji + margines
         setTimeout(() => {
             setActive((prev) => clampIndex(prev));
             pendingActiveRef.current = null;
-            setSwipeOffset(0);
             setSwipeAnimating(false);
             swipeCommitRef.current = null;
-        }, 60);
+        }, COMMIT_ANIM_MS);
     };
 
     const onTouchEnd = () => {
@@ -184,14 +170,14 @@ function DeckPage() {
             swipeCommitRef.current = dir;
             setSwipeAnimating(true);
             setSwipeOffset(dir * ((window.innerWidth || 800) * 0.6));
-            setTimeout(() => finalizeSwipeCommit(dir), 420);
+            setTimeout(() => finalizeSwipeCommit(dir), 320);
         } else if (swipeRef.current.horiz && Math.abs(velocity) > 0.35 && Math.abs(dx) > 30) {
             const dir = velocity > 0 ? 1 : -1;
             pendingActiveRef.current = active;
             swipeCommitRef.current = dir;
             setSwipeAnimating(true);
             setSwipeOffset(dir * ((window.innerWidth || 800) * 0.6));
-            setTimeout(() => finalizeSwipeCommit(dir), 420);
+            setTimeout(() => finalizeSwipeCommit(dir), 320);
         } else {
             // anulowanie swipe — krótszy powrót
             setSwipeAnimating(true);
@@ -237,6 +223,7 @@ function DeckPage() {
         }, midMs);
     };
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const animateSwipeByKey = (dir) => {
         if (!cards.length) return;
         // zamrażamy active podczas animacji klawiszowej
@@ -247,26 +234,35 @@ function DeckPage() {
         setTimeout(() => finalizeSwipeCommit(dir), 420);
     };
 
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === "ArrowLeft") {
+                animateSwipeByKey(-1);
+            } else if (e.key === "ArrowRight") {
+                animateSwipeByKey(1);
+            }
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [cards, active, animateSwipeByKey]);
+
     return (
         <div className={"deck-page"}>
-            <i className="side-icon learned-icon bi bi-mortarboard-fill"></i>
-            <i className="side-icon not-learned-icon bi bi-x"></i>
-
+            <i className="side-icon learned-icon bi bi-mortarboard-fill"
+               style={{opacity: learningProgress !== 100 ? 1 : 0, transition: "220ms"}}></i>
+            <i className="side-icon not-learned-icon bi bi-x"
+               style={{opacity: learningProgress !== 100 ? 1 : 0, transition: "220ms"}}></i>
+            {/*<div className="progress" role="progressbar" aria-label="Learning progress" aria-valuenow={learningProgress} aria-valuemin="0"*/}
+            {/*     aria-valuemax="100">*/}
+            {/*    <div className="progress-bar" style={{width: `${learningProgress}%`}}></div>*/}
+            {/*</div>*/}
             <div
-                ref={wrapperRef}
                 tabIndex={0}
                 className={"deck-wrap"}
-                onWheel={onWheel}
                 onTouchStart={onTouchStart}
                 onTouchMove={onTouchMove}
                 onTouchEnd={onTouchEnd}
-                onKeyDown={(e) => {
-                    if (e.key === "ArrowLeft") {
-                        animateSwipeByKey(-1);
-                    } else if (e.key === "ArrowRight") {
-                        animateSwipeByKey(1);
-                    }
-                }}
+
                 style={{touchAction: "pan-y"}}
             >
                 <div className="wheel" style={{transformStyle: "preserve-3d"}}>
@@ -294,10 +290,9 @@ function DeckPage() {
                         const moveProgress = (dragging || commitRunning) ? rawProgress : 0;
 
                         // inne karty przesuwają się w górę proporcjonalnie do progressu (tylko te "za" active)
-                        const baseRelativeY = offset * 10;
-                        const shiftPer = 34;
-                        const nonActiveTranslateY = (i === effectiveActive) ? activeTranslateY : (baseRelativeY - (offset > 0 ? shiftPer * moveProgress : 0));
-                        const translateY = nonActiveTranslateY;
+                        const baseRelativeY = offset * 6;
+                        const shiftPer = 4;
+                        const translateY = (i === effectiveActive) ? activeTranslateY : (baseRelativeY - (offset > 0 ? shiftPer * moveProgress : 0));
 
                         const baseOpacity = i === effectiveActive ? Math.max(0.3, 1 - Math.abs(tx) / ((window.innerWidth || 800))) : 1 - Math.min(0.6, Math.abs(offset) * 0.08);
 
@@ -307,23 +302,39 @@ function DeckPage() {
 
                         // transitions: during drag active follows finger (no transition), during commit keep other cards instant to avoid sideways motion
                         let transitionForThis;
+                        // if (isActive) {
+                        //     if (dragging) {
+                        //         transitionForThis = "transform 0ms, opacity 120ms";
+                        //         console.log(1)
+                        //     } else if (commitRunning) {
+                        //         transitionForThis = "transform 420ms cubic-bezier(.22,.9,.18,1), opacity 220ms";
+                        //         console.log(2)
+                        //     } else {
+                        //         transitionForThis = "transform 260ms cubic-bezier(.2,.9,.2,1), opacity 220ms";
+                        //         console.log(3)
+                        //     }
+                        // } else {
+                        //     if (commitRunning) {
+                        //         // podczas leaving niech inne karty nie animują bocznie — zero transition dla transform
+                        //         transitionForThis = "transform 0ms, opacity 220ms";
+                        //         console.log(4)
+                        //     } else if (dragging) {
+                        //         // podczas dragowania dajemy krótkie przejście dla płynności
+                        //         transitionForThis = "transform 120ms ease-out, opacity 180ms";
+                        //         console.log(5)
+                        //     } else {
+                        //         transitionForThis = "transform 420ms cubic-bezier(.22,.15,.18,1), opacity 220ms";
+                        //         console.log(6)
+                        //     }
+                        // }
                         if (isActive) {
-                            if (dragging) {
-                                transitionForThis = "transform 0ms, opacity 120ms";
-                            } else if (commitRunning) {
-                                transitionForThis = "transform 420ms cubic-bezier(.22,.9,.18,1), opacity 220ms";
-                            } else {
-                                transitionForThis = "transform 260ms cubic-bezier(.2,.9,.2,1), opacity 220ms";
-                            }
+                            transitionForThis = swipeAnimating ? "transform 420ms cubic-bezier(.22,.15,.18,1), opacity 220ms" : (dragging ? "transform 0ms" : "transform 420ms cubic-bezier(.22,.15,.18,1), opacity 220ms");
                         } else {
-                            if (commitRunning) {
-                                // podczas leaving niech inne karty nie animują bocznie — zero transition dla transform
+                            // jeśli commit (leave) jest w toku, zamrażamy transform nieaktywnych, żeby nowy active nie "przeskoczył"
+                            if (commitRunning && !dragging) {
                                 transitionForThis = "transform 0ms, opacity 220ms";
-                            } else if (dragging) {
-                                // podczas dragowania dajemy krótkie przejście dla płynności
-                                transitionForThis = "transform 120ms ease-out, opacity 180ms";
                             } else {
-                                transitionForThis = "transform 420ms cubic-bezier(.22,.15,.18,1), opacity 220ms";
+                                transitionForThis = dragging ? "transform 120ms linear, opacity 220ms" : "transform 420ms cubic-bezier(.22,.15,.18,1), opacity 220ms";
                             }
                         }
 
@@ -340,7 +351,8 @@ function DeckPage() {
                                 }}
                             >
                                 <div className="card-inner">
-                                    <span className="flip-toggle" style={{zIndex: 5}}>{card.buttonFlipped ? "Tył" : "Przód"}</span>
+                                    {/*<span className="flip-toggle"*/}
+                                    {/*      style={{zIndex: 5}}>{card.buttonFlipped ? "Tył" : "Przód"}</span>*/}
 
                                     <button
                                         className="flip-btn"

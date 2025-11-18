@@ -1,6 +1,6 @@
 .deck-page {
     min-height: calc(100vh - 170px);
-    background: -moz-linear-gradient(0deg, #ff3f3f 0%, #4185eb 100%);
+    background: linear-gradient(90deg, #ff3f3f 0%, #4185eb 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -51,7 +51,35 @@
         left: 2%;
     }
 }
+.deck-wrap:focus {
+    outline: none;
+    box-shadow: none;
+    border: none;
+}
 
+.preview-text {
+    transition: opacity 250ms;
+}
 
+.card:not(.active) .preview-text {
+    opacity: .1;
+}
 
+.progress {
+    position: absolute;
+    top: 140px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 6px;
+    border-radius: 0 0 8px 8px;
+    transition: width 300ms ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
+.progress-bar {
+    background: #9b4dff;
+    height: 100%;
+}
