@@ -14,6 +14,7 @@ import Footer from "./components/Footer.jsx";
 import AboutUs from "./components/AboutUs.jsx";
 import { useState } from "react";
 import MyDecksPage from "./components/MyDecks.jsx";
+import {getPublicDecks} from "./services/deckService.js";
 
 function Home() {
     const [search, setSearch] = useState("");
@@ -22,10 +23,15 @@ function Home() {
         category.title.toLowerCase().includes(search.toLowerCase())
     );
 
+    // const publicDecks = getPublicDecks();
+    // const filteredDecks = publicDecks.filter((deck) =>
+    //     deck.name.toLowerCase().includes(search.toLowerCase())
+    // );
+
     const popularDecks = [
-        { name: "Człowiek", categorySlug: "jezyk-angielski" },
-        { name: "Lalka", categorySlug: "jezyk-polski" },
-        { name: "Ortografia", categorySlug: "jezyk-polski" },
+        { name: "Człowiek", categorySlug: "angielski/czlowiek" },
+        { name: "Lalka", categorySlug: "polski/lalka" },
+        { name: "Ortografia", categorySlug: "polski/ortografia" },
     ];
 
     return (
@@ -69,7 +75,7 @@ function Home() {
                         <a
                             key={index}
                             className="popular-item"
-                            href={`/${deck.categorySlug}/decks`}
+                            href={`/${deck.categorySlug}`}
                         >
                             ⭐ {deck.name}
                         </a>
