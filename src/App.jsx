@@ -30,8 +30,8 @@ function Home() {
 
     const popularDecks = [
         { name: "Człowiek", categorySlug: "angielski/czlowiek" },
-        { name: "Lalka", categorySlug: "jezyk-polski" },
-        { name: "Ortografia", categorySlug: "jezyk-polski" },
+        { name: "Lalka", categorySlug: "polski/lalka" },
+        { name: "Ortografia", categorySlug: "polski/ortografia" },
     ];
 
     return (
