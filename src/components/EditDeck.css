@@ -143,6 +143,10 @@
     transform: rotateY(180deg);
     -webkit-transform: rotateY(180deg);
 }
+.card.flip-ready .preview-text, .card.flip-ready .front-content, .card.flip-ready .back-content{
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+}
 
 .seamless-input {
     width: 70%;
@@ -251,8 +255,6 @@
 /* wewnętrzny element obsługujący multiline clamp */
 
 .preview-text {
-    width: 64%;
-    max-width: 68%;
     box-sizing: border-box;
     padding: 0; /* usuń padding, żeby placeholder był zwykłym tekstem */
     text-align: center;
