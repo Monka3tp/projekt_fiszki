@@ -153,27 +153,16 @@ export default function LoginRegisterPage() {
         }
     }, [navigate, location.pathname, message]);
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        setMessage("");
-        setLoading(true);
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-            navigate(destination);
-        } catch (err) {
-            setMessage(err.message || "Błąd logowania");
-            setMessageType("error");
-            setLoading(false);
-        }
-    };
-
     const identifyError = (error) => {
-        if (error.code) {
-            switch (error.code) {
+        if (error) {
+            console.log("Firebase auth error code:", error);
+            switch (error) {
                 case 'auth/user-not-found':
                     return { message: "Nie znaleziono użytkownika o podanym adresie e-mail.", messageType: "danger" };
                 case 'auth/wrong-password':
                     return { message: "Nieprawidłowe hasło.", messageType: "danger" };
+                case 'auth/invalid-email':
+                    return { message: "Podany adres e-mail jest nieprawidłowy.", messageType: "danger" };
                 case 'auth/email-already-in-use':
                     return { message: "Podany adres e-mail jest już używany przez innego użytkownika.", messageType: "danger" };
                 case 'auth/weak-password':
@@ -184,6 +173,22 @@ export default function LoginRegisterPage() {
         }
     }
 
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        setMessage("");
+        setLoading(true);
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            navigate(destination);
+        } catch (err) {
+            console.error("Register error:", err);
+            const identifiedError = identifyError(err) || { message: err.message || "Błąd rejestracji", messageType: "danger" };
+            setMessage(identifiedError.message);
+            setMessageType(identifiedError.messageType || "danger");
+            setLoading(false);
+        }
+    };
+
     const handleRegister = async (e) => {
         e.preventDefault();
         setMessage("");
@@ -192,16 +197,17 @@ export default function LoginRegisterPage() {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             if (displayName && userCredential.user) {
                 try {
-                    await updateProfile(userCredential.user, { displayName });
+                    await updateProfile(userCredential.user, { displayName: displayName });
                 } catch (err) {
                     console.error("Błąd podczas ustawiania nazwy użytkownika:", err);
                 }
             }
-            navigate(`/${destination}`);
+            navigate(destination);
         } catch (err) {
-            const identifiedError = identifyError(err);
+            console.error("Register error:", err);
+            const identifiedError = identifyError(err) || { message: err.message || "Błąd rejestracji", messageType: "danger" };
             setMessage(identifiedError.message);
-            setMessageType(identifiedError.messageType);
+            setMessageType(identifiedError.messageType || "danger");
             setLoading(false);
         }
     };
