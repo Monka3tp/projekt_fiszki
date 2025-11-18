@@ -1,0 +1,343 @@
+:root {
+    --card-border-radius: 15px;
+}
+
+.deck-wrap {
+    width: 100%;
+    max-width: 720px;
+    height: 480px;
+    max-height: 480px;
+    margin: 20px auto;
+    position: relative;
+    perspective: 1200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+
+.wheel {
+    position: relative;
+    width: 320px;
+    height: 220px;
+    transform-style: preserve-3d;
+}
+
+.flip-toggle {
+    position: absolute;
+    left: 12px;
+    top: 8px;
+    color: #555;
+    font-size: 13px;
+    padding: 4px;
+    pointer-events: none;
+    user-select: none;
+}
+
+.flip-btn {
+    position: absolute;
+    right: 10px;
+    top: 8px;
+    background: transparent;
+    border: none;
+    padding: 6px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    z-index: 400;
+}
+
+.flip-btn i {
+    color: #9b4dff;
+    font-size: 16px;
+}
+
+@supports (-webkit-background-clip: text) or (background-clip: text) {
+    .flip-btn i {
+        background: linear-gradient(90deg, #d633ff 0%, #9b4dff 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+    }
+}
+
+.card {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform-origin: center center;
+    width: 320px;
+    height: 220px;
+    margin-left: -160px;
+    margin-top: -110px;
+    transition: transform 420ms cubic-bezier(.22, .9, .18, 1), opacity 220ms;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    will-change: transform, opacity;
+    display: flex;
+    border-radius: var(--card-border-radius);
+}
+
+.card .card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-style: preserve-3d;
+    transition: none;
+    border-radius: var(--card-border-radius);
+}
+
+
+.face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transition: opacity 180ms;
+    border-radius: var(--card-border-radius);
+    background: white;
+}
+
+.face.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.back {
+    transform: rotateY(180deg); /* translateZ(0.1px) */
+}
+
+.card.buttons-flipped .flip-toggle {
+    left: auto;
+    right: 12px;
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+    pointer-events: none;
+}
+
+.card.buttons-flipped .flip-btn {
+    right: auto;
+    left: 10px;
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+    z-index: 500;
+}
+
+.card.buttons-flipped .flip-btn i {
+    transform: rotateY(0deg);
+    -webkit-transform: rotateY(0deg);
+}
+
+.card.flip-ready .seamless-input {
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+}
+.card.flip-ready .preview-text, .card.flip-ready .front-content, .card.flip-ready .back-content{
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+}
+
+.seamless-input {
+    width: 70%;
+    text-align: center;
+    font-size: 20px;
+    color: #111;
+    background: transparent;
+    border: none;
+    outline: none;
+}
+
+.seamless-input::placeholder {
+    color: #999;
+}
+
+.card.active {
+    transition: transform 260ms cubic-bezier(.2, .9, .2, 1);
+}
+
+.deck-wrap.focused .card {
+    transition: opacity 180ms, transform 260ms;
+}
+
+.deck-controls {
+    position: absolute;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    z-index: 300;
+}
+
+.deck-wrap.focused .deck-button {
+    opacity: 0.4;
+}
+.deck-button:disabled {
+    cursor: default;
+    opacity: 0.1 !important;
+}
+
+.deck-button {
+    opacity: 0.95;
+    color: white;
+    line-height: 1;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 220ms, transform 220ms;
+    box-shadow: 0 8px 24px rgba(16,24,40,0.12);
+}
+
+.deck-button:hover:not(:disabled) {
+    opacity: 0.95 !important;
+    transform: scale(1.05);
+}
+
+.add-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(90deg, #d633ff, #9b4dff);
+    font-size: 22px;
+}
+
+.delete-btn {
+    width: 110px;
+    height: 44px;
+    border-radius: 22px;
+    padding-inline: 15px;
+    gap: 7px;
+    background: linear-gradient(90deg, #ff5d5d, #ff4d00);
+    font-size: 18px;
+}
+
+.save-btn {
+    width: 110px;
+    height: 44px;
+    border-radius: 22px;
+    padding-inline: 15px;
+    gap: 7px;
+    background: linear-gradient(90deg, #49c868, #0ae376);
+    font-size: 18px;
+}
+
+.add-btn:active {
+    transform: translateX(-50%) scale(.98);
+}
+
+.preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: transparent; /* usuń biały box */
+    padding: 0; /* brak dodatkowego wewnętrznego boxu */
+    border-radius: var(--card-border-radius);
+    min-height: 40px;
+    touch-action: manipulation;
+}
+
+/* wewnętrzny element obsługujący multiline clamp */
+
+.preview-text {
+    box-sizing: border-box;
+    padding: 0; /* usuń padding, żeby placeholder był zwykłym tekstem */
+    text-align: center;
+    font-size: 16px;
+    color: #111;
+    background: transparent;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    white-space: normal;
+    text-overflow: ellipsis;
+}
+
+.preview .placeholder {
+    display: inline;
+    pointer-events: none;
+    color: #777;
+    font-style: italic;
+    user-select: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+.fan .card .face {
+    overflow: hidden;
+}
+
+@media (max-width: 480px) {
+    .deck-wrap {
+        height: 420px;
+    }
+
+    .wheel {
+        width: 260px;
+        height: 180px;
+    }
+
+    .card {
+        width: 260px;
+        height: 180px;
+        margin-left: -130px;
+        margin-top: -90px;
+    }
+
+    .seamless-input {
+        font-size: 18px;
+        width: 75%;
+    }
+}
+
+.title-input {
+    width: auto;
+    max-width: 480px;
+    font-size: 28px;
+    font-weight: 600;
+    color: white;
+    background: transparent;
+    border: none;
+    outline: none;
+    text-align: center;
+    display: block;
+    border-bottom: white 2px solid;
+}
+.deck-editor {
+    position: absolute;
+    flex-direction: column;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 500;
+    gap: 12px;
+    margin-bottom: 12px;
+    transition: opacity 220ms;
+}
+
+.deck-wrap.focused .deck-editor {
+    opacity: 0.4;
+}
+
+.visibility-select {
+    position: relative;
+    width: auto;
+    height: 35px;
+}

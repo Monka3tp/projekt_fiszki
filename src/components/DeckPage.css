@@ -1,5 +1,5 @@
-.chapter-page {
-    min-height: calc(100vh - 60px);
+.deck-page {
+    min-height: calc(100vh - 170px);
     background: -moz-linear-gradient(0deg, #ff3f3f 0%, #4185eb 100%);
     display: flex;
     align-items: center;
@@ -13,7 +13,45 @@
     border-radius: 8px;
     max-width: 900px;
     width: 100%;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
     text-align: center;
 }
+
+.side-icon {
+    font-size: 8rem;
+    color: white;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.learned-icon {
+    right: 5%;
+}
+
+.not-learned-icon {
+    left: 5%;
+}
+
+@media (max-width: 768px) {
+    .side-icon {
+        font-size: 5rem;
+        transform: translateY(-50%);
+    }
+}
+@media (max-width: 480px) {
+    .side-icon {
+        font-size: 3rem;
+        transform: translateY(-50%);
+    }
+    .learned-icon {
+        right: 2%;
+    }
+
+    .not-learned-icon {
+        left: 2%;
+    }
+}
+
+
+
 

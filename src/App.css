@@ -4,6 +4,13 @@ body {
     background: linear-gradient(-90deg, #d633ff55, #9b4dff55);
     color: #111;
 }
+.subtitle {
+    text-align: center;
+    margin-top: -10px;
+    margin-bottom: 30px;
+    font-size: 18px;
+    color: #555;
+}
 .header {
     display: flex;
     justify-content: space-between;
@@ -14,9 +21,12 @@ body {
 }
 
 .main {
-    max-width: 1000px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+    flex: 1 1 auto;
+  min-height: 0;
+  /* jeśli margin-y zaburzają layout, użyj margin: 0 auto oraz padding */
+  margin: 2rem auto;
+  max-width: 1000px;
+  width: 100%;
 }
 
 .title {
@@ -29,6 +39,8 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
+    align-items: center;
+    justify-items: center;
 }
 .link {
     color: #9b4dff;
@@ -36,4 +48,183 @@ body {
 }
 .link:hover {
     text-decoration: underline;
+}
+
+
+/* HERO SECTION */
+.hero {
+    text-align: center;
+    padding: 3rem 0 1rem;
+}
+
+.title {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #3a0066;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: #444;
+    margin-bottom: 2rem;
+}
+
+/* STATYSTYKI POD TYTUŁEM */
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.stat-box {
+    background: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.stat-box:hover {
+    transform: translateY(-4px);
+}
+
+.stat-box strong {
+    display: block;
+    font-size: 1.7rem;
+    color: #7b2cbf;
+}
+
+.stat-box span {
+    font-size: 0.9rem;
+    color: #444;
+}
+
+/* GRID – lekkie dopracowanie */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+
+/* 🔍 WYSZUKIWARKA */
+.search-input {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 1rem;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 2rem;
+    transition: 0.2s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #9b4dff;
+    box-shadow: 0 0 6px #9b4dff55;
+}
+
+
+/* ⭐ POPULARNE ZESTAWY */
+.popular-section {
+    margin: 4rem 0 3rem;
+    text-align: center;
+}
+
+.popular-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.popular-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.popular-item {
+    background: white;
+    padding: 12px 16px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.popular-item:hover {
+    transform: translateY(-3px);
+    background: #f3e5ff;
+}
+
+
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    width: 100px;
+    height: 100vh;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 40px #00000022;
+    z-index: -1;
+}
+body::before {
+    left: 0;
+}
+
+body::after {
+    right: 0;
+}
+
+@media (max-width: 600px) {
+    body::before,
+    body::after {
+        display: none;
+    }
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* upewnij się, że stopka nie ma pozycji fixed/absolute */
+footer {
+  /* przykładowe style stupki */
+  padding: 1rem;
+  background: #f8f9fa;
+    position: relative;
+}
+
+.page {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+    justify-content: center;
+}
+
+.page > * {
+  flex: 1 1 auto;
 }

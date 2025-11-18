@@ -1,4 +1,5 @@
-
+// javascript
+// File: `src/components/LoginRegisterPage.jsx`
 import React, { useState, useEffect } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import "../App.css";
@@ -11,9 +12,20 @@ import {
     updateProfile,
 } from "firebase/auth";
 
-function LoginForm({ email, setEmail, password, setPassword, onSubmit, loading, error }) {
+function LoginForm({
+    email,
+    setEmail,
+    password,
+    setPassword,
+    onSubmit,
+    loading,
+    message,
+    messageType,
+}) {
+
     return (
         <div className="login-register-container">
+            {message !== "" && (<div className={`alert alert-${messageType}`} role="alert">{message}</div>)}
             <h1>Zaloguj się</h1>
             <p className="login-register-subtitle">Witaj ponownie w BrainDeck</p>
 
@@ -38,8 +50,6 @@ function LoginForm({ email, setEmail, password, setPassword, onSubmit, loading, 
                     required
                 />
 
-                {error && <div style={{ color: "crimson", marginTop: 8 }}>{error}</div>}
-
                 <button type="submit" className="btn-primary full-width" disabled={loading}>
                     {loading ? "Ładowanie..." : "Zaloguj się"}
                 </button>
@@ -61,10 +71,13 @@ function RegisterForm({
     setDisplayName,
     onSubmit,
     loading,
-    error,
+    message,
+    messageType,
 }) {
+
     return (
         <div className="login-register-container">
+            {message !== "" && (<div className={`alert alert-${messageType}`} role="alert">{message}</div>)}
             <h1>Zarejestruj się</h1>
             <p className="login-register-subtitle">Witaj w BrainDeck</p>
 
@@ -98,8 +111,6 @@ function RegisterForm({
                     required
                 />
 
-                {error && <div style={{ color: "crimson", marginTop: 8 }}>{error}</div>}
-
                 <button type="submit" className="btn-primary full-width" disabled={loading}>
                     {loading ? "Tworzenie..." : "Zarejestruj się"}
                 </button>
@@ -119,38 +130,63 @@ export default function LoginRegisterPage() {
 
     const navigate = useNavigate();
 
+    const [destination, setDestination] = useState(location.state?.from || "/");
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [displayName, setDisplayName] = useState("");
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
+    const [message, setMessage] = useState(location.state?.message || "");
+    const [messageType, setMessageType] = useState(location.state?.messageType || "info");
 
-    // resetuj formularz i błędy przy zmianie widoku
     useEffect(() => {
-        setError("");
+        setMessage("");
         setLoading(false);
         setEmail("");
         setPassword("");
         setDisplayName("");
     }, [path]);
 
+    useEffect(() => {
+        if (message) {
+            navigate(location.pathname, {replace: true, state: {}});
+        }
+    }, [navigate, location.pathname, message]);
+
     const handleLogin = async (e) => {
         e.preventDefault();
-        setError("");
+        setMessage("");
         setLoading(true);
         try {
             await signInWithEmailAndPassword(auth, email, password);
-
-            navigate("/");
+            navigate(destination);
         } catch (err) {
-            setError(err.message || "Błąd logowania");
+            setMessage(err.message || "Błąd logowania");
+            setMessageType("error");
             setLoading(false);
         }
     };
 
+    const identifyError = (error) => {
+        if (error.code) {
+            switch (error.code) {
+                case 'auth/user-not-found':
+                    return { message: "Nie znaleziono użytkownika o podanym adresie e-mail.", messageType: "danger" };
+                case 'auth/wrong-password':
+                    return { message: "Nieprawidłowe hasło.", messageType: "danger" };
+                case 'auth/email-already-in-use':
+                    return { message: "Podany adres e-mail jest już używany przez innego użytkownika.", messageType: "danger" };
+                case 'auth/weak-password':
+                    return { message: "Hasło jest zbyt słabe. Proszę użyć silniejszego hasła.", messageType: "warning" };
+                default:
+                    return { message: "Wystąpił błąd podczas przetwarzania żądania.", messageType: "danger" };
+            }
+        }
+    }
+
     const handleRegister = async (e) => {
         e.preventDefault();
-        setError("");
+        setMessage("");
         setLoading(true);
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -161,9 +197,11 @@ export default function LoginRegisterPage() {
                     console.error("Błąd podczas ustawiania nazwy użytkownika:", err);
                 }
             }
-            navigate("/");
+            navigate(`/${destination}`);
         } catch (err) {
-            setError(err.message || "Błąd rejestracji");
+            const identifiedError = identifyError(err);
+            setMessage(identifiedError.message);
+            setMessageType(identifiedError.messageType);
             setLoading(false);
         }
     };
@@ -180,7 +218,9 @@ export default function LoginRegisterPage() {
                             setPassword={setPassword}
                             onSubmit={handleLogin}
                             loading={loading}
-                            error={error}
+                            message={message}
+                            messageType={messageType}
+                            isVisible={!isRegister}
                         />
                     </div>
                     <div className="flip-card-back">
@@ -193,7 +233,9 @@ export default function LoginRegisterPage() {
                             setDisplayName={setDisplayName}
                             onSubmit={handleRegister}
                             loading={loading}
-                            error={error}
+                            message={message}
+                            messageType={messageType}
+                            isVisible={isRegister}
                         />
                     </div>
                 </div>

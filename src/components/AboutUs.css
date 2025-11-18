@@ -46,10 +46,11 @@
     .aboutus {
         background-size: 120px, 140px;
         background-position: left bottom, right top;
+        padding: 50px 15px;
     }
 
     .aboutus-overlay {
-        padding: 25px;
+        padding: 20px;
     }
 
     .aboutus-title {
@@ -58,5 +59,6 @@
 
     .aboutus-text {
         font-size: 16px;
+        line-height: 1.2;
     }
 }
