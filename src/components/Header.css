@@ -88,3 +88,30 @@
 .dropdown-item:hover {
     background: #faf5ff;
 }
+
+.burger {
+    background: transparent;
+    border: none;
+    font-size: 1.6rem;
+    padding: 6px 10px;
+    display: none;
+    cursor: pointer;
+}
+
+/* Ukryj niektóre elementy w menu na małych ekranach, pokaż burger */
+@media (max-width: 768px) {
+    .nav .nav-items {
+        display: none;
+    }
+    .burger {
+        display: inline-flex;
+        align-items: center;
+    }
+    /* poprawka pozycji dropdownu mobilnego */
+    .mobile-dropdown .profile-dropdown {
+        position: absolute;
+        right: 0;
+        top: calc(100% + 8px);
+        min-width: 200px;
+    }
+}

@@ -78,6 +78,12 @@ body {
     margin-bottom: 3rem;
 }
 
+@media (max-width: 600px) {
+    .stats {
+        flex-wrap: wrap;
+    }
+}
+
 .stat-box {
     background: white;
     padding: 1rem 1.5rem;
@@ -133,6 +139,13 @@ body {
 .popular-section {
     margin: 4rem 0 3rem;
     text-align: center;
+}
+
+@media (max-width: 600px) {
+    .popular-section {
+        margin: 2rem 15px 2rem;
+    }
+
 }
 
 .popular-section h2 {
