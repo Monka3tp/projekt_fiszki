@@ -13,6 +13,7 @@ import EditDeck from "./components/EditDeck.jsx";
 import Footer from "./components/Footer.jsx";
 import AboutUs from "./components/AboutUs.jsx";
 import { useState } from "react";
+import MyDecksPage from "./components/MyDecks.jsx";
 
 function Home() {
     const [search, setSearch] = useState("");
@@ -96,7 +97,9 @@ function App() {
                                 <Route path="/register" element={<LoginRegisterPage />} />
                                 <Route path="/:categoryId/decks" element={<CategoryPage />} />
                                 <Route path="/:categoryId/:deckId" element={<DeckPage />} />
+                                <Route path="/:deckId" element={<DeckPage />} />
                                 <Route path="/edit-deck/:deckId" element={<EditDeck />} />
+                                <Route path="/your-decks" element={<MyDecksPage />} />
                             </Routes>
                         </div>
                         <Footer />

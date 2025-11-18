@@ -24,6 +24,7 @@ export default function EditDeck() {
   const focusedRef = useRef({ index: null });
   const suppressBlurRef = useRef(false); // podczas flipowania blokuje chwilowe blur
 
+  const [title, setTitle] = useState("");
   const [visible, setVisible] = useState("public");
 
   
@@ -335,9 +336,10 @@ export default function EditDeck() {
     return Math.sign(n) * Math.pow(Math.abs(n), pow);
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     const deckData = {
+      title: title,
       cards: cards.map((c) => ({ front: c.front, back: c.back })),
       visible: visible,
     };
@@ -350,9 +352,10 @@ export default function EditDeck() {
           console.error("Error updating deck:", err);
         });
     } else {
-      createDeck({ ...deckData, ownerId: user.uid })
-        .then((newDeckId) => {
-          navigate(`/deck/${newDeckId}`);
+      // Poprawione wywołanie createDeck
+      createDeck(user.uid, deckData)
+        .then((docRef) => {
+          navigate(`/deck/${docRef.id}`);
         })
         .catch((err) => {
           console.error("Error creating deck:", err);
@@ -394,7 +397,7 @@ export default function EditDeck() {
       style={{ touchAction: "none" }}
     >
       <div className="deck-editor" style={{display: "flex", justifyContent: "center"}}>
-        <input type={"text"} className={"title-input"} placeholder={"Tytuł"}/>
+        <input type={"text"} className={"title-input"} placeholder={"Tytuł"} value={title} onChange={(e) => setTitle(e.target.value)}/>
         <select className={"form-select visibility-select"} defaultValue={"public"} value={visible} onChange={(e) => setVisible(e.target.value)}>
           <option value={"public"}>Publiczny</option>
           <option value={"unlisted"}>Niepubliczny</option>

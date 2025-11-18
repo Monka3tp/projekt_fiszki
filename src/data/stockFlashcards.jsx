@@ -1,6 +1,6 @@
-const stockFlashcards = {
+export const stockFlashcards = {
     angielski_czlowiek: {
-        flashcards: [
+        cards: [
             {
                 front: "człowiek",
                 back: "human"
@@ -86,7 +86,7 @@ const stockFlashcards = {
         ownerId: "0"
     },
     angielski_miejsce_zamieszkania: {
-        flashcards: [
+        cards: [
             {
                 front: "dom",
                 back: "house"
@@ -172,7 +172,7 @@ const stockFlashcards = {
         ownerId: "0"
     },
     angielski_podroze: {
-        flashcards: [
+        cards: [
             {
                 front: "podróż",
                 back: "travel"
@@ -218,7 +218,7 @@ const stockFlashcards = {
         ownerId: "0"
     },
     angielski_zwierzeta: {
-        flashcards: [
+        cards: [
             {
                 front: "pies",
                 back: "dog"
@@ -284,7 +284,7 @@ const stockFlashcards = {
         ownerId: "0"
     },
     angielski_jedzenie: {
-        flashcards: [
+        cards: [
             {
                 front: "jabłko",
                 back: "apple"
@@ -350,7 +350,7 @@ const stockFlashcards = {
         ownerId: "0"
     },
     angielski_szkola: {
-        flashcards: [
+        cards: [
             {
                 front: "szkoła",
                 back: "school"
@@ -416,7 +416,7 @@ const stockFlashcards = {
         ownerId: "0"
     },
     poslki_ortografia: {
-        flashcards: [
+        cards: [
             {
                 back: "wózek",
                 front: "w_zek"
@@ -462,7 +462,7 @@ const stockFlashcards = {
         ownerId: "0"
     },
     polski_lektura_lalka: {
-        flashcards: [
+        cards: [
             {
                 front: "Główny bohater powieści to ____",
                 back: "Stanisław Wokulski"
@@ -488,7 +488,7 @@ const stockFlashcards = {
         ownerId: "0"
     },
     polski_przypadki: {
-        flashcards: [
+        cards: [
             {
                 front: "Mianownik liczby pojedynczej od 'kot' to ____",
                 back: "kot"
@@ -534,7 +534,7 @@ const stockFlashcards = {
         ownerId: "0"
     },
     historia_daty: {
-        flashcards: [
+        cards: [
             {
                 front: "Chrzest Polski miał miejsce w roku ____",
                 back: "966"
@@ -580,7 +580,7 @@ const stockFlashcards = {
         ownerId: "0"
     },
     biologia_czlowiek: {
-        flashcards: [
+        cards: [
             {
                 front: "Największy narząd człowieka to ____",
                 back: "skóra"
@@ -646,7 +646,7 @@ const stockFlashcards = {
         ownerId: "0"
     },
     inf03: {
-        flashcards: [
+        cards: [
             {
                 front: "Podstawowym językiem do tworzenia struktury strony internetowej jest ____",
                 back: "HTML"
@@ -712,7 +712,7 @@ const stockFlashcards = {
         ownerId: "0"
     },
     inf04: {
-        flashcards: [
+        cards: [
             {
                 front: "System operacyjny z rodziny open-source, często używany w serwerach, to ____",
                 back: "Linux"

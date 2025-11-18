@@ -27,7 +27,7 @@ function Header() {
 
     return (
         <header className="header" style={{ position: "relative" }}>
-            <Link to={"/"} className="logo"><img src={`${process.env.PUBLIC_URL || ''}/images/logo.svg`} width={"80px"} alt={"BrainDeck"}></img></Link>
+            <Link to={"/"} className="logo"><img src={`${process.env.PUBLIC_URL || ''}/images/logo.svg`} alt={"BrainDeck"}></img></Link>
             <nav className="nav">
                 <Link to={"/edit-deck/new"}>Utwórz zestaw fiszek</Link>
 
