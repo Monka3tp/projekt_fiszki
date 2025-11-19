@@ -415,7 +415,7 @@ export const stockFlashcards = {
         visible: "public",
         ownerId: "0"
     },
-    poslki_ortografia: {
+    polski_ortografia: {
         cards: [
             {
                 back: "wózek",
