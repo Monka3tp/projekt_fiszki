@@ -199,13 +199,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: opacity 220ms, transform 220ms;
+    transition: opacity 220ms, transform 220ms, scale 220ms;
     box-shadow: 0 8px 24px rgba(16,24,40,0.12);
+    font-family: "Inter", sans-serif;
+
 }
 
 .deck-button:hover:not(:disabled) {
     opacity: 0.95 !important;
-    transform: scale(1.05);
+    scale: 1.05;
 }
 
 .add-btn {

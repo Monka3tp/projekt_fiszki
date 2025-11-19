@@ -140,7 +140,6 @@ export default function LoginRegisterPage() {
     const [messageType, setMessageType] = useState(location.state?.messageType || "info");
 
     useEffect(() => {
-        setMessage("");
         setLoading(false);
         setEmail("");
         setPassword("");

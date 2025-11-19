@@ -1,4 +1,4 @@
-// `src/App.jsx`
+// src/App.jsx
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./App.css";
 import Header from "./components/Header";
@@ -12,21 +12,28 @@ import { AuthProvider } from "./contexts/AuthContext.jsx";
 import EditDeck from "./components/EditDeck.jsx";
 import Footer from "./components/Footer.jsx";
 import AboutUs from "./components/AboutUs.jsx";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import MyDecksPage from "./components/MyDecks.jsx";
 import {getPublicDecks} from "./services/deckService.js";
+import DeckCard from "./components/DeckCard.jsx";
 
 function Home() {
     const [search, setSearch] = useState("");
+    const [publicDecks, setPublicDecks] = useState([]);
 
     const filteredCategories = categories.filter((category) =>
         category.title.toLowerCase().includes(search.toLowerCase())
     );
 
-    // const publicDecks = getPublicDecks();
-    // const filteredDecks = publicDecks.filter((deck) =>
-    //     deck.name.toLowerCase().includes(search.toLowerCase())
-    // );
+    // Pobierz publiczne zestawy raz przy montowaniu
+    useEffect(() => {
+        getPublicDecks(setPublicDecks);
+    }, []);
+
+    // Filtruj decki z publicDecks na podstawie search
+    const filteredDecks = (publicDecks || []).filter((deck) =>
+        deck.title?.toLowerCase().includes(search.toLowerCase())
+    );
 
     const popularDecks = [
         { name: "Człowiek", categorySlug: "angielski/czlowiek" },
@@ -50,6 +57,9 @@ function Home() {
             <div className="grid">
                 {filteredCategories.map((category) => (
                     <CategoryCard key={category.id} category={category} />
+                ))}
+                {filteredDecks.map((deck) => (
+                    <DeckCard key={deck.id} category={"userDecks"} deck={deck} />
                 ))}
             </div>
 
@@ -103,7 +113,7 @@ function App() {
                                 <Route path="/register" element={<LoginRegisterPage />} />
                                 <Route path="/:categoryId/decks" element={<CategoryPage />} />
                                 <Route path="/:categoryId/:deckId" element={<DeckPage />} />
-                                <Route path="/:deckId" element={<DeckPage />} />
+                                <Route path="/deck/:deckId" element={<DeckPage />} />
                                 <Route path="/edit-deck/:deckId" element={<EditDeck />} />
                                 <Route path="/your-decks" element={<MyDecksPage />} />
                             </Routes>
@@ -116,5 +126,3 @@ function App() {
     );
 }
 export default App;
-
-/* `src/App.css` */

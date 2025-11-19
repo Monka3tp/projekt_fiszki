@@ -16,19 +16,24 @@
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
     text-align: center;
 }
-
+.side-icon-container {
+    top: 55%;
+    transform: translateY(-50%);
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
 .side-icon {
     font-size: 8rem;
     color: white;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
 }
-.learned-icon {
+.learned-icon-container {
     right: 5%;
 }
 
-.not-learned-icon {
+.not-learned-icon-container {
     left: 5%;
 }
 
@@ -43,11 +48,11 @@
         font-size: 3rem;
         transform: translateY(-50%);
     }
-    .learned-icon {
+    .learned-icon-container {
         right: 2%;
     }
 
-    .not-learned-icon {
+    .not-learned-icon-container {
         left: 2%;
     }
 }
@@ -65,21 +70,15 @@
     opacity: .1;
 }
 
-.progress {
+.edit-button {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-size: 22px;
+    background: linear-gradient(90deg, #49c868, #0ae376);
     position: absolute;
-    top: 140px;
+    top: 30%;
     left: 50%;
+    z-index: 500;
     transform: translateX(-50%);
-    width: 80%;
-    height: 6px;
-    border-radius: 0 0 8px 8px;
-    transition: width 300ms ease-in-out;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.progress-bar {
-    background: #9b4dff;
-    height: 100%;
 }

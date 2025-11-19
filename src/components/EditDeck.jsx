@@ -12,6 +12,9 @@ export default function EditDeck() {
   const deckId = useParams().deckId;
 
   // każda karta ma teraz też displayedSide: która strona jest aktualnie wyświetlana na faces
+  const [loadedCards, setLoadedCards] = useState(false);
+
+  const [deck, setDeck] = useState({}); // cały deck z serwera
   const [cards, setCards] = useState(() => [{ front: "", back: "", flipped: false, displayedSide: "front", counterRotated: false, buttonFlipped: false }]);
   const [active, setActive] = useState(0);
   const [inputFocused, setInputFocused] = useState(false);
@@ -29,22 +32,28 @@ export default function EditDeck() {
 
   
   useEffect(() => {
-    if (deckId && deckId !== "new") {
-      getDeckById(deckId).then((data) => {
-        if (data) {
-          if (data.ownerId !== user.uid) {
-            console.error("Unauthorized access to deck");
-            navigate("/", { replace: true });
-            return;
-          }
-          setCards(data.map(card => ({ front: card.front, back: card.back, flipped: false, displayedSide: "front", counterRotated: false, buttonFlipped: false })));
-        } else {
-          console.error("Deck not found");
-          navigate("/", { replace: true });
-        }
-      });
+    if (deckId && deckId !== "new" && user && !loadedCards) {
+      getDeckById(deckId).then(fetchedDeck => {
+                setDeck(fetchedDeck || {});
+            }).catch(err => {
+                console.error("Error fetching deck:", err);
+            });
     }
-  }, [deckId, user, navigate]);
+  }, [deckId, user, navigate, loadedCards]);
+
+  useEffect(() => {
+        if (!deck || !deck.cards) return;
+        setTitle(deck.title || "");
+        setVisible(deck.visible || "public");
+        setCards(deck.cards.map(card => ({
+            ...card,
+            flipped: false,
+            displayedSide: "front",
+            counterRotated: false,
+            buttonFlipped: false
+        })));
+        setLoadedCards(true);
+    }, [deck]);
   
   // Ustaw suppress BEFORE blur (mousedown / touchstart / keydown) — dzięki temu blur handler nie zdąży się wykonać przed click
   // Przy okazji zapobiegamy focusowaniu przycisku przez preventDefault na mousedown
@@ -376,7 +385,7 @@ export default function EditDeck() {
   }, [loading, user, navigate]);
 
   // dopiero tutaj, po wszystkich hookach, zwróć loader podczas ładowania
-  if (loading) {
+  if (loading || (deckId && deckId !== "new" && !loadedCards)) {
     return <div className="loader-container" style={{display: "flex", justifyContent: "center", margin: "50px"}}>
       <GridLoader color={"#9b4dff"} size={15} />
     </div>;
@@ -602,8 +611,7 @@ export default function EditDeck() {
            onKeyDown={(ev) => { if (ev.key === " " || ev.key === "Enter") beginSuppress(ev); }}
            onClick={addCard}
            aria-label="Dodaj kartę"
-          >
-           +
+          >+
           </button>
           <button className={"deck-button save-btn"} type="button" onClick={(e) => handleSave(e)} aria-label="Zapisz talię">
             Zapisz

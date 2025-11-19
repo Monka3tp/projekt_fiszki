@@ -14,10 +14,10 @@ self.addEventListener('activate', (event) => {
   })());
 });
 
-self.addEventListener('fetch', (event) => {
-  // prosty passthrough — nie blokujemy krytycznych requestów podczas debugowania
-  event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
-});
+// self.addEventListener('fetch', (event) => {
+//   // prosty passthrough — nie blokujemy krytycznych requestów podczas debugowania
+//   event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
+// });
 
 // opcjonalnie: log errors globalnie
 self.addEventListener('message', (ev) => {

@@ -18,7 +18,6 @@ function Header() {
             await logout();
             setOpen(false);
             setMobileOpen(false);
-            navigate("/");
         } catch (e) {
             console.error("Logout error:", e);
         }
@@ -35,7 +34,6 @@ function Header() {
             <Link to={"/"} className="logo"><img src={logoSrc} alt={"BrainDeck"} /></Link>
             <nav className="nav">
                 {/* Desktop / large screens - original links */}
-                <div className="nav-items">
                     <Link to={"/edit-deck/new"}>Utwórz zestaw fiszek</Link>
 
                     {user ? (
@@ -57,7 +55,6 @@ function Header() {
                     )}
 
                     <div className="install-desktop"><InstallButton/></div>
-                </div>
 
                 {/* Mobile burger dropdown - visible only on small screens */}
                 <Dropdown align="end" show={mobileOpen} onToggle={(nextShow) => setMobileOpen(nextShow)} className="mobile-dropdown">
