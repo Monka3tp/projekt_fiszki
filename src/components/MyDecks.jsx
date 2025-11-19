@@ -24,7 +24,7 @@ function MyDecksPage() {
     if (loading === false && user === null) {
       navigate("/login", {
         state: {
-          message: "Musisz być zalogowany, aby tworzyć zestawy fiszek.",
+          message: "Musisz być zalogowany, aby wyświetlić tę stronę.",
           messageType: "warning",
           from: location.pathname,
         },

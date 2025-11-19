@@ -9,7 +9,7 @@ function DeckCard({ category, deck }) {
 
     const handleClick = () => {
         if (category === "userDecks") {
-            navigate(`/${deck.id}`);
+            navigate(`/deck/${deck.id}`);
             return;
         }
         const deckId = makeSlug(deck.title);
@@ -18,10 +18,10 @@ function DeckCard({ category, deck }) {
 
     return (
         <div className="cat-card" onClick={handleClick}>
-            {category !== "userDecks" && <img src={deck.image} alt={deck.title} />}
+            <img src={category==="userDecks" ? "/images/logo.svg" : deck.image} alt={deck.title} />
             <div className="cat-card-info">
                 <h3>{deck.title}</h3>
-                <p>Ilość zestawów: {category === "userDecks" ? deck.length : deck.flashcardCount}</p>
+                <p>Ilość fiszek: {category === "userDecks" ? deck.cards.length + " | Stworzone przez użytkownika" : deck.flashcardCount}</p>
             </div>
         </div>
     );

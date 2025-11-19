@@ -1,6 +1,6 @@
 // javascript
 // file: 'src/components/DeckPage.jsx'
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useRef, useState} from "react";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.css";
@@ -9,14 +9,16 @@ import "./DeckPage.css"
 import {stockFlashcards} from "../data/stockFlashcards.jsx";
 import {getDeckById} from "../services/deckService.js";
 import {useAuth} from "../contexts/AuthContext.jsx";
+import {GridLoader} from "react-spinners";
 
 function makeUid() {
-    return `${Date.now().toString(36)}_${Math.random().toString(36).slice(2,9)}`;
+    return `${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 9)}`;
 }
 
 function DeckPage() {
     const navigate = useNavigate();
-    const { user, loading } = useAuth();
+    const {user, loading} = useAuth();
+    const [hasAccess, setHasAccess] = useState(false);
 
     const categoryId = useParams().categoryId || null;
     const deckId = useParams().deckId || null;
@@ -35,12 +37,13 @@ function DeckPage() {
         buttonFlipped: false,
         uid: makeUid()
     }]);
+    const [loadedCards, setLoadedCards] = useState(false);
     const [learnedCards, setLearnedCards] = useState([]);
     const [learningProgress, setLearningProgress] = useState(0);
     const [isOwneredByUser, setIsOwnedByUser] = useState(false);
-    
+
     useEffect(() => {
-        setLearningProgress(cards.length > 0 ? (learnedCards.length / (cards.length + learnedCards.length)) : 0);
+        setLearningProgress(cards.length > 0 ? (learnedCards.length / (cards.length + learnedCards.length)) : 100);
     }, [cards, learnedCards, learningProgress, setLearningProgress]);
 
 
@@ -54,6 +57,7 @@ function DeckPage() {
     const pendingActiveRef = useRef(null);
 
     useEffect(() => {
+        if (!deckId || loadedCards) return;
         if (isStock) {
             const key = `${categoryId}_${deckId}`;
             setDeck(stockFlashcards[key]);
@@ -64,7 +68,32 @@ function DeckPage() {
                 console.error("Error fetching deck:", err);
             });
         }
-    }, [categoryId, deckId, isStock]);
+    }, [categoryId, deckId, isStock, loadedCards, loading]);
+
+    useEffect(() => {
+        if (!deck) return;
+        console.log(!loading && user === null);
+        if (deck.visible === "private") {
+            if (!loading && user === null) {
+                navigate("/login", {
+                    state: {
+                        message: "Musisz być zalogowany, aby uzyskać dostęp do tego zestawu fiszek.",
+                        messageType: "warning",
+                        from: `/deck/${deckId}`
+                    }
+                });
+            } else if (!loading) {
+                if (!user || user.uid !== deck.ownerId) {
+                    setHasAccess(false);
+                }
+            }
+        } else {
+            setHasAccess(true);
+        }
+        if (!loading && user && deck.ownerId === user.uid) {
+            setIsOwnedByUser(true);
+        }
+    }, [deck, deckId, loading, navigate, user]);
 
     useEffect(() => {
         if (!deck || !deck.cards) return;
@@ -77,6 +106,7 @@ function DeckPage() {
             buttonFlipped: false,
             uid: card.uid || makeUid()
         })));
+        setLoadedCards(true);
     }, [deck]);
 
     useEffect(() => {
@@ -246,16 +276,48 @@ function DeckPage() {
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [cards, active, animateSwipeByKey]);
 
+    if (loading || !loadedCards) {
+        return <div className="loader-container" style={{display: "flex", justifyContent: "center", margin: "50px"}}>
+            <GridLoader color={"#9b4dff"} size={15}/>
+        </div>;
+    }
+    if (!hasAccess) {
+        return (
+            <main className="main">
+                <h1 className="title">Brak dostępu</h1>
+                <p>Nie masz dostępu do tego zestawu fiszek.</p>
+            </main>
+        );
+    }
+
     return (
         <div className={"deck-page"}>
-            <i className="side-icon learned-icon bi bi-mortarboard-fill"
-               style={{opacity: learningProgress !== 100 ? 1 : 0, transition: "220ms"}}></i>
-            <i className="side-icon not-learned-icon bi bi-x"
-               style={{opacity: learningProgress !== 100 ? 1 : 0, transition: "220ms"}}></i>
-            {/*<div className="progress" role="progressbar" aria-label="Learning progress" aria-valuenow={learningProgress} aria-valuemin="0"*/}
-            {/*     aria-valuemax="100">*/}
-            {/*    <div className="progress-bar" style={{width: `${learningProgress}%`}}></div>*/}
-            {/*</div>*/}
+            <div className={"side-icon-container learned-icon-container"} style={{opacity: learningProgress !== 100 ? 1 : 0, transition: "220ms"}}>
+                <i className="side-icon learned-icon bi bi-mortarboard-fill"></i>
+                {window.innerWidth > window.innerHeight || window.innerWidth >= 720 ?
+                    <img src={process.env.PUBLIC_URL || '' + "/images/right-arrow.png"} alt="" className="arrow-icon"
+                         width={"50px"} height={"auto"}/> :
+                    <i className="side-icon bi bi-arrow-90deg-right"></i>
+                }
+            </div>
+            <div className={"side-icon-container not-learned-icon-container"} style={{opacity: learningProgress !== 100 ? 1 : 0, transition: "220ms"}}>
+                <i className="side-icon not-learned-icon bi bi-x"></i>
+                {window.innerWidth > window.innerHeight || window.innerWidth >= 720 ?
+                    <img src={process.env.PUBLIC_URL || '' + "/images/left-arrow.png"} alt="" className="arrow-icon"
+                         width={"50px"} height={"auto"}/> :
+                    <i className="side-icon bi bi-arrow-90deg-left"></i>
+                }
+            </div>
+            {isOwneredByUser && (
+                <button className={"deck-button edit-button"} type="button" aria-label="Edit deck" onClick={(e) => {
+                    e.stopPropagation();
+
+                    navigate(`/edit-deck/${deckId}`);
+                            }}>
+                <i className="bi bi-pencil-square" aria-hidden="true"></i>
+                </button>
+            )}
+
             <div
                 tabIndex={0}
                 className={"deck-wrap"}
@@ -265,7 +327,24 @@ function DeckPage() {
 
                 style={{touchAction: "pan-y"}}
             >
-                <div className="wheel" style={{transformStyle: "preserve-3d"}}>
+                <p className="congrat-text" style={{
+                    color: "white",
+                    fontSize: "38px",
+                    fontWeight: "600",
+                    opacity: learningProgress !== 100 ? 0 : 1,
+                    transition: "220ms",
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    width: "100%",
+                    textAlign: "center",
+                }}>Gratulację! Nauczyłeś się wszystkich fiszek z tego zestawu!</p>
+                <div className="wheel" style={{
+                    transformStyle: "preserve-3d",
+                    opacity: learningProgress !== 100 ? 1 : 0,
+                    transition: "220ms"
+                }}>
                     {cards.map((card, i) => {
                         const displayedFrontKey = card.displayedSide || "front";
                         const flipRotation = card.flipped ? " rotateY(180deg)" : "";
@@ -302,31 +381,6 @@ function DeckPage() {
 
                         // transitions: during drag active follows finger (no transition), during commit keep other cards instant to avoid sideways motion
                         let transitionForThis;
-                        // if (isActive) {
-                        //     if (dragging) {
-                        //         transitionForThis = "transform 0ms, opacity 120ms";
-                        //         console.log(1)
-                        //     } else if (commitRunning) {
-                        //         transitionForThis = "transform 420ms cubic-bezier(.22,.9,.18,1), opacity 220ms";
-                        //         console.log(2)
-                        //     } else {
-                        //         transitionForThis = "transform 260ms cubic-bezier(.2,.9,.2,1), opacity 220ms";
-                        //         console.log(3)
-                        //     }
-                        // } else {
-                        //     if (commitRunning) {
-                        //         // podczas leaving niech inne karty nie animują bocznie — zero transition dla transform
-                        //         transitionForThis = "transform 0ms, opacity 220ms";
-                        //         console.log(4)
-                        //     } else if (dragging) {
-                        //         // podczas dragowania dajemy krótkie przejście dla płynności
-                        //         transitionForThis = "transform 120ms ease-out, opacity 180ms";
-                        //         console.log(5)
-                        //     } else {
-                        //         transitionForThis = "transform 420ms cubic-bezier(.22,.15,.18,1), opacity 220ms";
-                        //         console.log(6)
-                        //     }
-                        // }
                         if (isActive) {
                             transitionForThis = swipeAnimating ? "transform 420ms cubic-bezier(.22,.15,.18,1), opacity 220ms" : (dragging ? "transform 0ms" : "transform 420ms cubic-bezier(.22,.15,.18,1), opacity 220ms");
                         } else {
@@ -351,8 +405,6 @@ function DeckPage() {
                                 }}
                             >
                                 <div className="card-inner">
-                                    {/*<span className="flip-toggle"*/}
-                                    {/*      style={{zIndex: 5}}>{card.buttonFlipped ? "Tył" : "Przód"}</span>*/}
 
                                     <button
                                         className="flip-btn"
